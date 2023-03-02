@@ -1,5 +1,6 @@
 package code;
 
+import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import model.HammingResponse;

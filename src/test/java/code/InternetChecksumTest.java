@@ -1,12 +1,36 @@
 package code;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigInteger;
 
 public class InternetChecksumTest {
+
+    @ParameterizedTest
+    @CsvSource({
+            "00000000000000001111111111111111,0000000000000000",
+            "0110011001100000010101010101010110001111000011001011010100111101,011001100110000001010101010101011000111100001100"
+    })
+    public void encode(String expected, String message) {
+        Assertions.assertEquals(expected, InternetChecksum.encode(message));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0000000000000000,00000000000000001111111111111111",
+            "011001100110000001010101010101011000111100001100,0110011001100000010101010101010110001111000011001011010100111101"
+    })
+    public void decode(String expected, String message) {
+        Assertions.assertEquals(expected, InternetChecksum.decode(message));
+    }
+
+    @Test
+    public void decode_whenMessageIsCorrupted_shouldThrowException() {
+        Assertions.assertThrows(RuntimeException.class, () -> InternetChecksum.decode("00000100000000001111111111111111"));
+    }
 
     @ParameterizedTest
     @CsvSource({

@@ -1,6 +1,7 @@
 package model;
 
 import enums.DetectingCode;
+import enums.ErrorChannelModel;
 import lombok.Getter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -13,9 +14,11 @@ public class ProgramOption {
             .required(true)
             .hasArg()
             .build();
-    public static final Option IS_BURST_ERROR = Option.builder("B")
-            .longOpt("burstError")
-            .desc("Specify if type of error is burst (default false)")
+    public static final Option ERROR_CHANNEL_MODEL = Option.builder("E")
+            .longOpt("errorModel")
+            .desc("Specify the error model of the transmission channel. Default model is " +
+                    ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL.getArgumentName() + ". Valid models are: " +
+                    ErrorChannelModel.getArgumentNamesForConsole())
             .build();
     public static final Option BURST_LENGTH = Option.builder("BL")
             .longOpt("burstLength")
@@ -74,7 +77,7 @@ public class ProgramOption {
         encodeDecodeOptions.addOption(GENERATOR_POLYNOMIAL);
 
         graphOptions.addOption(CODE);
-        graphOptions.addOption(IS_BURST_ERROR);
+        graphOptions.addOption(ERROR_CHANNEL_MODEL);
         graphOptions.addOption(BURST_LENGTH);
         graphOptions.addOption(MESSAGE_BIT_SIZE);
         graphOptions.addOption(MIN_P);

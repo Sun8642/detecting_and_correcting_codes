@@ -20,6 +20,13 @@ public final class InternetChecksum {
         return message.shiftLeft(16).add(getChecksum(message));
     }
 
+    public static String decode(String encodedMessage) {
+        if (isCorrupted(encodedMessage)) {
+            throw new RuntimeException("Could not decode message, the encoded message is corrupted");
+        }
+        return encodedMessage.substring(0, encodedMessage.length() - 16);
+    }
+
     public static String getChecksum(String message) {
         return Integer.toBinaryString(getChecksumInt(message));
     }
