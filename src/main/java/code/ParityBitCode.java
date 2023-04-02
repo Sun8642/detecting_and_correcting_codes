@@ -2,10 +2,9 @@ package code;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import math.BigInt;
 import util.ProbabilityError;
 import util.SyntheticDataGenerator;
-
-import java.math.BigInteger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ParityBitCode {
@@ -18,50 +17,33 @@ public final class ParityBitCode {
         return 1 - probabilityOfDetectingError;
     }
 
-    public static String encode(String message) {
-        return message + (isNumberOfOneEven(message) ? '0' : '1');
+    public static void encode(BigInt message) {
+        message.shiftLeft(1);
+        if (message.getBitCount() % 2 != 0) {
+            message.add(1);
+        }
     }
 
-    public static BigInteger encode(BigInteger message) {
-        message = message.shiftLeft(1);
-        return message.bitCount() % 2 == 0 ? message : message.add(BigInteger.ONE);
-    }
-
-    public static String decode(String encodedMessage) {
+    public static void decode(BigInt encodedMessage) {
         if (isCorrupted(encodedMessage)) {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
         }
-        return encodedMessage.substring(0, encodedMessage.length() - 1);
+        encodedMessage.shiftRight(1);
     }
 
-    public static BigInteger decode(BigInteger encodedMessage) {
-        if (isCorrupted(encodedMessage)) {
-            throw new RuntimeException("Could not decode message, the encoded message is corrupted");
-        }
-        return encodedMessage.shiftRight(1);
+    public static boolean isCorrupted(BigInt message) {
+        return message.getBitCount() % 2 != 0;
     }
 
-    public static boolean isCorrupted(String message) {
-        return !isNumberOfOneEven(message);
-    }
-
-    public static boolean isCorrupted(BigInteger message) {
-        return message.bitCount() % 2 != 0;
-    }
-
-    private static boolean isNumberOfOneEven(String message) {
-        return message.chars().filter(ch -> ch == '1').count() % 2 == 0;
-    }
-
-    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
-        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        String encodedMessage = encode(message);
+    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
+        BigInt encodedMessage = SyntheticDataGenerator.getRandomWord(messageBitSize);
+        encode(encodedMessage);
         int nbMessageWithIntegrity = 0;
         int nbCorruptedMessageCorrectlyDetected = 0;
 
-        String corruptedMessage;
+        BigInt corruptedMessage = new BigInt(encodedMessage);
         for (int i = 0; i < iterations; i++) {
-            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+            SyntheticDataGenerator.corruptWord(corruptedMessage, p);
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {

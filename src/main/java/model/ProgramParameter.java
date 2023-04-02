@@ -2,15 +2,19 @@ package model;
 
 import enums.DetectingCode;
 import enums.ErrorChannelModel;
+
+import java.math.BigInteger;
 import java.text.Normalizer;
 import lombok.Getter;
 import lombok.Setter;
+import math.BigInt;
 import org.apache.commons.cli.CommandLine;
 
 @Getter
 @Setter
 public class ProgramParameter {
 
+    public static final String ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE = "The polynomial generator must be greater or equals to 10 (in binary representation).";
     protected DetectingCode detectingCode;
     protected ErrorChannelModel errorChannelModel = ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL;
 
@@ -26,8 +30,8 @@ public class ProgramParameter {
     protected boolean canCorrectError = false;
 
     protected int burstErrorLength = 3;
-    private String generatorPolynomial = "1011";
-    private String message;
+    private BigInt generatorPolynomial = new BigInt(Long.parseLong("1011", 2));
+    private BigInt message;
 
     public void setParameters(CommandLine line) {
         if (line.hasOption(ProgramOption.CODE)) {
@@ -154,7 +158,7 @@ public class ProgramParameter {
 
     public void setGeneratorPolynomial(String generatorPolynomial) {
         if (generatorPolynomial == null || generatorPolynomial.length() == 0) {
-            throw new IllegalArgumentException("The polynomial generator must be greater or equals to x (>= 10 in binary representation).");
+            throw new IllegalArgumentException(ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE);
         }
         generatorPolynomial = generatorPolynomial.trim();
         int oneCount = 0;
@@ -167,8 +171,18 @@ public class ProgramParameter {
             }
         }
         if (oneCount == 0 || (oneCount == 1 && generatorPolynomial.charAt(generatorPolynomial.length() - 1) == '1')) {
-            throw new IllegalArgumentException("The polynomial generator must be greater or equals to x (>= 10 in binary representation).");
+            throw new IllegalArgumentException(ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE);
         }
-        this.generatorPolynomial = generatorPolynomial;
+        this.generatorPolynomial = BigInt.from(new BigInteger(generatorPolynomial, 2));
+    }
+
+    public void setMessage(String message) {
+        for (int i = 0; i < message.length(); i++) {
+            if (message.charAt(i) != '0' && message.charAt(i) != '1') {
+                throw new IllegalArgumentException("The message can only contain 1s and 0s as characters.");
+            }
+        }
+        setMessageBitSize(message.length());
+        this.message = BigInt.from(new BigInteger(message, 2));
     }
 }

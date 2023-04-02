@@ -1,5 +1,6 @@
 package code;
 
+import math.BigInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +16,9 @@ public class InternetChecksumTest {
             "0110011001100000010101010101010110001111000011001011010100111101,011001100110000001010101010101011000111100001100"
     })
     public void encode(String expected, String message) {
-        Assertions.assertEquals(expected, InternetChecksum.encode(message));
+        BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
+        InternetChecksum.encode(encodedMessage);
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
     }
 
     @ParameterizedTest
@@ -24,12 +27,14 @@ public class InternetChecksumTest {
             "011001100110000001010101010101011000111100001100,0110011001100000010101010101010110001111000011001011010100111101"
     })
     public void decode(String expected, String message) {
-        Assertions.assertEquals(expected, InternetChecksum.decode(message));
+        BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
+        InternetChecksum.decode(encodedMessage);
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
     }
 
     @Test
     public void decode_whenMessageIsCorrupted_shouldThrowException() {
-        Assertions.assertThrows(RuntimeException.class, () -> InternetChecksum.decode("00000100000000001111111111111111"));
+        Assertions.assertThrows(RuntimeException.class, () -> InternetChecksum.decode((new BigInt(Long.parseLong("00000100000000001111111111111111", 2)))));
     }
 
     @ParameterizedTest
@@ -38,16 +43,7 @@ public class InternetChecksumTest {
             "1011010100111101,011001100110000001010101010101011000111100001100"
     })
     public void getChecksum(String expected, String message) {
-        Assertions.assertEquals(expected, InternetChecksum.getChecksum(message));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "1111111111111111,0000000000000000",
-            "1011010100111101,011001100110000001010101010101011000111100001100"
-    })
-    public void getChecksumBigInteger(String expected, String message) {
-        Assertions.assertEquals(new BigInteger(expected, 2), InternetChecksum.getChecksum(new BigInteger(message, 2)));
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), InternetChecksum.getChecksum(new BigInt(Long.parseLong(message, 2))));
     }
 
     @ParameterizedTest
@@ -66,6 +62,6 @@ public class InternetChecksumTest {
             "false,0110011001100000010101010101010110001111000010101011010100111111",  //Corrupted, the 14th and 15th bit of the last word and the 15th bit of the checksum were flipped
     })
     public void isCorrupted(boolean isCorrupted, String encodedMessage) {
-        Assertions.assertEquals(isCorrupted, InternetChecksum.isCorrupted(encodedMessage));
+        Assertions.assertEquals(isCorrupted, InternetChecksum.isCorrupted(BigInt.from(new BigInteger(encodedMessage, 2))));
     }
 }

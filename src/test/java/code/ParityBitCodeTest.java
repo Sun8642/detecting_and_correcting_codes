@@ -1,5 +1,6 @@
 package code;
 
+import math.BigInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -25,18 +26,9 @@ public class ParityBitCodeTest {
             "1011010,101101",
     })
     public void encode(String expected, String message) {
-        Assertions.assertEquals(expected, ParityBitCode.encode(message));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "00000,0000",
-            "11110,1111",
-            "101101,10110",
-            "1011010,101101",
-    })
-    public void encodeBigInteger(String expected, String message) {
-        Assertions.assertEquals(new BigInteger(expected, 2), ParityBitCode.encode(new BigInteger(message, 2)));
+        BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
+        ParityBitCode.encode(encodedMessage);
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
     }
 
     @ParameterizedTest
@@ -47,7 +39,9 @@ public class ParityBitCodeTest {
             "101101,1011010",
     })
     public void decode(String expected, String message) {
-        Assertions.assertEquals(expected, ParityBitCode.decode(message));
+        BigInt decodedMessage = new BigInt(Long.parseLong(message, 2));
+        ParityBitCode.decode(decodedMessage);
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), decodedMessage);
     }
 
     @ParameterizedTest
@@ -58,6 +52,6 @@ public class ParityBitCodeTest {
             "1011011",
     })
     public void decode_whenMessageIsCorrupted_shouldThrowException(String encodedMessage) {
-        Assertions.assertThrows(RuntimeException.class, () -> ParityBitCode.decode(encodedMessage));
+        Assertions.assertThrows(RuntimeException.class, () -> ParityBitCode.decode(new BigInt(Long.parseLong(encodedMessage, 2))));
     }
 }

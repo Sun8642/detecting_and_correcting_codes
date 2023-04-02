@@ -47,17 +47,4 @@ public class BitUtilTest {
     public void isNotPowerOfTwo(boolean expected, int number) {
         Assertions.assertEquals(expected, BitUtil.isNotPowerOfTwo(number));
     }
-
-    @ParameterizedTest
-    @CsvSource({
-            "10100,1000,2,true",
-            "10001,1000,0,true",
-            "10000,1000,0,false",
-            "10101010,1001010,5,true",
-            "100010,10,5,true",
-            "10,10,5,false",
-    })
-    public void insertBit(String expected, String binaryBigInteger, int bitPosition, boolean bitSet) {
-        Assertions.assertEquals(new BigInteger(expected, 2), BitUtil.insertBit(new BigInteger(binaryBigInteger, 2), bitPosition, bitSet));
-    }
 }

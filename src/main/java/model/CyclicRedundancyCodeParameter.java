@@ -1,15 +1,18 @@
 package model;
 
 import lombok.Getter;
+import math.BigInt;
+
+import java.math.BigInteger;
 
 @Getter
 public class CyclicRedundancyCodeParameter extends CodeParameter {
 
-    private String generatorPolynomial = "1011";
+    private BigInt generatorPolynomial = new BigInt(Long.parseLong("1011", 2));
 
     public void setGeneratorPolynomial(String generatorPolynomial) {
         if (generatorPolynomial == null || generatorPolynomial.length() == 0) {
-            throw new IllegalArgumentException("The polynomial generator must be greater or equals to x (>= 10 in binary representation).");
+            throw new IllegalArgumentException(ProgramParameter.ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE);
         }
         generatorPolynomial = generatorPolynomial.trim();
         int oneCount = 0;
@@ -22,8 +25,8 @@ public class CyclicRedundancyCodeParameter extends CodeParameter {
             }
         }
         if (oneCount == 0 || (oneCount == 1 && generatorPolynomial.charAt(generatorPolynomial.length() - 1) == '1')) {
-            throw new IllegalArgumentException("The polynomial generator must be greater or equals to x (>= 10 in binary representation).");
+            throw new IllegalArgumentException(ProgramParameter.ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE);
         }
-        this.generatorPolynomial = generatorPolynomial;
+        this.generatorPolynomial = BigInt.from(new BigInteger(generatorPolynomial, 2));
     }
 }

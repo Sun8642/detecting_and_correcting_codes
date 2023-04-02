@@ -2,77 +2,58 @@ package code;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import util.BitUtil;
+import math.BigInt;
 import util.SyntheticDataGenerator;
-
-import java.math.BigInteger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CyclicRedundancyCode {
 
-    public static String encode(String message, String generatorPolynomial) {
-        //Multiply Ps by Xr
-        int encodedMessageInt = Integer.parseInt(message, 2) << (generatorPolynomial.length() - 1);
-        int generatorPolynomialInt = Integer.parseInt(generatorPolynomial, 2);
-
-        return Integer.toBinaryString(encodedMessageInt + getPolynomialArithmeticModulo2(encodedMessageInt, generatorPolynomialInt));
+    public static void encode(BigInt message, BigInt generatorPolynomial) {
+        message.shiftLeft(generatorPolynomial.getLeftMostSetBit() - 1);
+        message.add(getPolynomialArithmeticModulo2(message, generatorPolynomial));
     }
 
-    public static BigInteger encode(BigInteger message, BigInteger generatorPolynomial) {
-        BigInteger encodedMessage = message.shiftLeft(generatorPolynomial.bitLength() - 1);
-        return encodedMessage.add(getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial));
-    }
+    public static BigInt getPolynomialArithmeticModulo2(BigInt dividend, BigInt divisor) {
+        BigInt remainder = new BigInt(dividend);
+        divisor = new BigInt(divisor);
+        int remainderLeftMostSetBit = remainder.getLeftMostSetBit();
+        int newRemainderLeftMostSetBit;
+        int divisorLeftMostSetBit = divisor.getLeftMostSetBit();
 
-    private static int getPolynomialArithmeticModulo2(int dividend, int divisor) {
-        int remainder = dividend;
-        int remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
-        int divisorLeftMostSetBit = BitUtil.leftMostSetBit(divisor);
+        if (remainderLeftMostSetBit > divisorLeftMostSetBit) {
+            divisor.shiftLeft(remainderLeftMostSetBit - divisorLeftMostSetBit);
+        }
 
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
-            remainder = remainder ^ (divisor << (remainderLeftMostSetBit - divisorLeftMostSetBit));
-            remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
+//            remainder.xor(divisor);
+            remainder.xor2(divisor);
+            newRemainderLeftMostSetBit = remainder.getLeftMostSetBit();
+            divisor.shiftRight(remainderLeftMostSetBit - newRemainderLeftMostSetBit);
+            remainderLeftMostSetBit -= (remainderLeftMostSetBit - newRemainderLeftMostSetBit);
         }
         return remainder;
     }
 
-    private static BigInteger getPolynomialArithmeticModulo2(BigInteger dividend, BigInteger divisor) {
-        BigInteger remainder = dividend;
-        int remainderLeftMostSetBit = remainder.bitLength();
-        int divisorLeftMostSetBit = divisor.bitLength();
-
-        while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
-            remainder = remainder.xor(divisor.shiftLeft(remainderLeftMostSetBit - divisorLeftMostSetBit));
-            remainderLeftMostSetBit = remainder.bitLength();
-        }
-        return remainder;
+    public static boolean isCorrupted(BigInt encodedMessage, BigInt generatorPolynomial) {
+        return !getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial).isZero();
     }
 
-    public static boolean isCorrupted(String encodedMessage, String generatorPolynomial) {
-        int encodedMessageInt = Integer.parseInt(encodedMessage, 2);
-        int generatorPolynomialInt = Integer.parseInt(generatorPolynomial, 2);
-        return getPolynomialArithmeticModulo2(encodedMessageInt, generatorPolynomialInt) != 0;
-    }
-
-    public static boolean isCorrupted(int encodedMessage, int generatorPolynomial) {
-        return getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial) != 0;
-    }
-
-    public static String decode(String encodedMessage, String generatorPolynomial) {
+    public static void decode(BigInt encodedMessage, BigInt generatorPolynomial) {
         if (isCorrupted(encodedMessage, generatorPolynomial)) {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
         }
-        return encodedMessage.substring(0, encodedMessage.length() - (generatorPolynomial.length() - 1));
+        encodedMessage.shiftRight(generatorPolynomial.getLeftMostSetBit() - 1);
     }
 
-    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize, String generatorPolynomial) {
-        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        String encodedMessage = encode(message, generatorPolynomial);
+    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize, BigInt generatorPolynomial) {
+        BigInt encodedMessage = SyntheticDataGenerator.getRandomWord(messageBitSize);
+        encode(encodedMessage, generatorPolynomial);
         int nbMessageWithIntegrity = 0;
         int nbCorruptedMessageCorrectlyDetected = 0;
 
-        String corruptedMessage;
+        BigInt corruptedMessage = new BigInt(encodedMessage);
         for (int i = 0; i < iterations; i++) {
-            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+            SyntheticDataGenerator.corruptWord(corruptedMessage, p);
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {

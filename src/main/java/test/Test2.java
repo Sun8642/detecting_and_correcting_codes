@@ -87,17 +87,17 @@ public final class Test2 {
     private static double[] getProbabilitiesForCode(CodeParameter codeParameter, DetectingCode code, double p) {
         switch (code) {
             case PARITY_BIT_CODE -> {
-                return new double[]{ParityBitCode.getProbabilityOfSuccess(codeParameter.getNumberOfIterationsPerProbability(), p, codeParameter.getMessageBitSize())};
+                return new double[]{ParityBitCode.getErrorDetectionRate(codeParameter.getNumberOfIterationsPerProbability(), p, codeParameter.getMessageBitSize())};
             }
             case INTERNET_CHECKSUM -> {
-                return new double[]{InternetChecksum.getProbabilityOfSuccess(codeParameter.getNumberOfIterationsPerProbability(), p, codeParameter.getMessageBitSize())};
+                return new double[]{InternetChecksum.getErrorDetectionRate(codeParameter.getNumberOfIterationsPerProbability(), p, codeParameter.getMessageBitSize())};
             }
             case CYCLIC_REDUNDANCY_CODE -> {
-                return new double[]{CyclicRedundancyCode.getProbabilityOfSuccess(codeParameter.getNumberOfIterationsPerProbability(), p,
+                return new double[]{CyclicRedundancyCode.getErrorDetectionRate(codeParameter.getNumberOfIterationsPerProbability(), p,
                         codeParameter.getMessageBitSize(), ((CyclicRedundancyCodeParameter) codeParameter).getGeneratorPolynomial())};
             }
             case HAMMING_CODE -> {
-                return HammingCode.getProbabilityOfSuccess(codeParameter.getNumberOfIterationsPerProbability(), p, codeParameter.getMessageBitSize());
+                return HammingCode.getErrorDetectionRate(codeParameter.getNumberOfIterationsPerProbability(), p, codeParameter.getMessageBitSize());
             }
             default -> throw new IllegalArgumentException("No code provided or no implementation found");
         }
