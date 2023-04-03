@@ -3,14 +3,16 @@ package model;
 import enums.DetectingCode;
 import enums.ErrorChannelModel;
 import enums.MainCommand;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-public class ProgramOption {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CommandLineOption {
 
-    public static final Option MAIN_COMMAND = Option.builder("MC")
-            .longOpt("mainCommand")
-            .desc("The functionality to use. Valid commands are: " + MainCommand.getArgumentNamesForConsole())
+    public static final Option MAIN_COMMAND = Option.builder("")
+            .desc("The command to use. Valid commands are: " + MainCommand.getArgumentNamesForConsole())
             .required(true)
             .hasArg()
             .build();
@@ -25,6 +27,7 @@ public class ProgramOption {
             .desc("Specify the error model of the transmission channel. Default model is " +
                     ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL.getArgumentName() + ". Valid models are: " +
                     ErrorChannelModel.getArgumentNamesForConsole())
+            .hasArg()
             .build();
     public static final Option BURST_LENGTH = Option.builder("BL")
             .longOpt("burstLength")
@@ -108,5 +111,6 @@ public class ProgramOption {
         CORRUPT_MESSAGE_OPTIONS.addOption(P);
         CORRUPT_MESSAGE_OPTIONS.addOption(ERROR_CHANNEL_MODEL);
         CORRUPT_MESSAGE_OPTIONS.addOption(BURST_LENGTH);
+        CORRUPT_MESSAGE_OPTIONS.addOption(MESSAGE);
     }
 }

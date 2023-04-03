@@ -5,9 +5,8 @@ import command.EncodeCommand;
 import command.GenerateGraphCommand;
 import command.GenerateMessageCommand;
 import enums.MainCommand;
-import model.ProgramOption;
+import model.CommandLineOption;
 import model.ProgramParameter;
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -19,38 +18,39 @@ public class Main {
     private static final String APPLICATION_NAME = "myApp";
 
     public static void main(String[] args) {
-        Options options = ProgramOption.MAIN_OPTIONS;
+        Options options = CommandLineOption.MAIN_OPTIONS;
         CommandLineParser parser = new DefaultParser();
         try {
-            CommandLine line = parser.parse(options, args);
-
+            if (args == null || args.length == 0) {
+                throw new IllegalArgumentException("No command given in parameter");
+            }
             Command command;
-            MainCommand mainCommand = ProgramParameter.parseMainCommand(line.getOptionValue(ProgramOption.MAIN_COMMAND));
+            MainCommand mainCommand = ProgramParameter.parseMainCommand(args[0]);
             ProgramParameter programParameter = new ProgramParameter();
 
             switch (mainCommand) {
                 case ENCODE -> {
-                    options = ProgramOption.ENCODE_DECODE_OPTIONS;
+                    options = CommandLineOption.ENCODE_DECODE_OPTIONS;
                     programParameter.setParameters(parser.parse(options, args));
                     command = new EncodeCommand();
                 }
                 case DECODE -> {
-                    options = ProgramOption.ENCODE_DECODE_OPTIONS;
+                    options = CommandLineOption.ENCODE_DECODE_OPTIONS;
                     programParameter.setParameters(parser.parse(options, args));
                     command = new DecodeCommand();
                 }
                 case GENERATE_MESSAGE -> {
-                    options = ProgramOption.GENERATE_MESSAGE_OPTIONS;
+                    options = CommandLineOption.GENERATE_MESSAGE_OPTIONS;
                     programParameter.setParameters(parser.parse(options, args));
                     command = new GenerateMessageCommand();
                 }
                 case CORRUPT_MESSAGE -> {
-                    options = ProgramOption.CORRUPT_MESSAGE_OPTIONS;
+                    options = CommandLineOption.CORRUPT_MESSAGE_OPTIONS;
                     programParameter.setParameters(parser.parse(options, args));
                     command = new CorruptMessageCommand();
                 }
                 case GENERATE_GRAPH -> {
-                    options = ProgramOption.GENERATE_GRAPH_OPTIONS;
+                    options = CommandLineOption.GENERATE_GRAPH_OPTIONS;
                     programParameter.setParameters(parser.parse(options, args));
                     command = new GenerateGraphCommand();
                 }

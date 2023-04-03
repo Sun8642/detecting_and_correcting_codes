@@ -46,14 +46,19 @@ public final class CyclicRedundancyCode {
     }
 
     public static double getErrorDetectionRate(int iterations, double p, int messageBitSize, BigInt generatorPolynomial) {
-        BigInt encodedMessage = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        encode(encodedMessage, generatorPolynomial);
+        BigInt message;
+        BigInt encodedMessage;
+        BigInt corruptedMessage;
         int nbMessageWithIntegrity = 0;
         int nbCorruptedMessageCorrectlyDetected = 0;
 
-        BigInt corruptedMessage = new BigInt(encodedMessage);
         for (int i = 0; i < iterations; i++) {
+            message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+            encodedMessage = new BigInt(message);
+            encode(encodedMessage, generatorPolynomial);
+            corruptedMessage = new BigInt(encodedMessage);
             SyntheticDataGenerator.corruptWord(corruptedMessage, p);
+
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {

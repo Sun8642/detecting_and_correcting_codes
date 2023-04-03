@@ -223,6 +223,11 @@ public class BigInt extends Number implements Comparable<BigInt> {
         return new BigInteger(toString()).toString(2);
     }
 
+    public String toBinaryString(int minLength) {
+        String binaryString = toBinaryString();
+        return binaryString.length() < minLength ? "0".repeat(minLength - binaryString.length()) + binaryString : binaryString;
+    }
+
     /*** <Constructors> ***/
     /**
      * Creates a BigInt from the given parameters.

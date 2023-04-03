@@ -6,8 +6,6 @@ import math.BigInt;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 
-import java.math.BigInteger;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class InternetChecksum {
 
@@ -57,14 +55,19 @@ public final class InternetChecksum {
     }
 
     public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-        BigInt encodedMessage = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        encode(encodedMessage);
+        BigInt message;
+        BigInt encodedMessage;
+        BigInt corruptedMessage;
         int nbMessageWithIntegrity = 0;
         int nbCorruptedMessageCorrectlyDetected = 0;
 
-        BigInt corruptedMessage = new BigInt(encodedMessage);
         for (int i = 0; i < iterations; i++) {
+            message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+            encodedMessage = new BigInt(message);
+            encode(encodedMessage);
+            corruptedMessage = new BigInt(encodedMessage);
             SyntheticDataGenerator.corruptWord(corruptedMessage, p);
+
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {

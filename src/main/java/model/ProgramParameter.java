@@ -35,48 +35,56 @@ public class ProgramParameter {
     private BigInt message;
 
     public void setParameters(CommandLine line) {
-        if (line.hasOption(ProgramOption.CODE)) {
-            detectingCode = parseCode(line.getOptionValue(ProgramOption.CODE));
+        if (line.hasOption(CommandLineOption.CODE)) {
+            detectingCode = parseCode(line.getOptionValue(CommandLineOption.CODE));
+            if (DetectingCode.HAMMING_CODE.equals(detectingCode)) {
+                canCorrectError = true;
+            }
         }
 
-        if (line.hasOption(ProgramOption.ERROR_CHANNEL_MODEL)) {
-            errorChannelModel = parseErrorModel(line.getOptionValue(ProgramOption.ERROR_CHANNEL_MODEL));
+        if (line.hasOption(CommandLineOption.ERROR_CHANNEL_MODEL)) {
+            errorChannelModel = parseErrorModel(line.getOptionValue(CommandLineOption.ERROR_CHANNEL_MODEL));
         }
 
-        if (line.hasOption(ProgramOption.BURST_LENGTH)) {
-            setBurstErrorLength(Integer.parseInt(line.getOptionValue(ProgramOption.BURST_LENGTH)));
+        if (line.hasOption(CommandLineOption.BURST_LENGTH)) {
+            setBurstErrorLength(Integer.parseInt(line.getOptionValue(CommandLineOption.BURST_LENGTH)));
         }
 
-        if (line.hasOption(ProgramOption.MESSAGE_BIT_SIZE)) {
-            setMessageBitSize(Integer.parseInt(line.getOptionValue(ProgramOption.MESSAGE_BIT_SIZE)));
+        if (line.hasOption(CommandLineOption.MESSAGE_BIT_SIZE)) {
+            setMessageBitSize(Integer.parseInt(line.getOptionValue(CommandLineOption.MESSAGE_BIT_SIZE)));
         }
 
-        if (line.hasOption(ProgramOption.MIN_P)) {
-            setMinP(Double.parseDouble(line.getOptionValue(ProgramOption.MIN_P)));
+        if (line.hasOption(CommandLineOption.MIN_P)) {
+            setMinP(Double.parseDouble(line.getOptionValue(CommandLineOption.MIN_P)));
         }
 
-        if (line.hasOption(ProgramOption.MAX_P)) {
-            setMaxP(Double.parseDouble(line.getOptionValue(ProgramOption.MAX_P)));
+        if (line.hasOption(CommandLineOption.MAX_P)) {
+            setMaxP(Double.parseDouble(line.getOptionValue(CommandLineOption.MAX_P)));
         }
 
-        if (line.hasOption(ProgramOption.P)) {
-            setP(Double.parseDouble(line.getOptionValue(ProgramOption.P)));
+        if (line.hasOption(CommandLineOption.P)) {
+            setP(Double.parseDouble(line.getOptionValue(CommandLineOption.P)));
         }
 
-        if (line.hasOption(ProgramOption.ITERATIONS_PER_P)) {
-            setNumberOfIterationsPerProbability(Integer.parseInt(line.getOptionValue(ProgramOption.ITERATIONS_PER_P)));
+        if (line.hasOption(CommandLineOption.ITERATIONS_PER_P)) {
+            setNumberOfIterationsPerProbability(Integer.parseInt(line.getOptionValue(CommandLineOption.ITERATIONS_PER_P)));
         }
 
-        if (line.hasOption(ProgramOption.NB_STEP_PER_P)) {
-            setNumberOfStep(Integer.parseInt(line.getOptionValue(ProgramOption.NB_STEP_PER_P)));
+        if (line.hasOption(CommandLineOption.NB_STEP_PER_P)) {
+            setNumberOfStep(Integer.parseInt(line.getOptionValue(CommandLineOption.NB_STEP_PER_P)));
         }
 
-        if (line.hasOption(ProgramOption.GENERATOR_POLYNOMIAL)) {
-            setGeneratorPolynomial(line.getOptionValue(ProgramOption.GENERATOR_POLYNOMIAL));
+        if (line.hasOption(CommandLineOption.GENERATOR_POLYNOMIAL)) {
+            setGeneratorPolynomial(line.getOptionValue(CommandLineOption.GENERATOR_POLYNOMIAL));
         }
 
-        if (line.hasOption(ProgramOption.MESSAGE)) {
-            setMessage(line.getOptionValue(ProgramOption.MESSAGE));
+        if (line.hasOption(CommandLineOption.MESSAGE)) {
+            String messageFromOption = line.getOptionValue(CommandLineOption.MESSAGE);
+            setMessage(messageFromOption);
+            setMessageBitSize(messageFromOption.length());
+            if (line.hasOption(CommandLineOption.MESSAGE_BIT_SIZE) && Integer.parseInt(line.getOptionValue(CommandLineOption.MESSAGE_BIT_SIZE)) != messageFromOption.length()) {
+                System.out.println("Warning, overriding message bit size by the length of the message.");
+            }
         }
     }
 

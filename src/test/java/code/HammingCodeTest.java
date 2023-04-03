@@ -29,7 +29,7 @@ public class HammingCodeTest {
     public void decode(boolean isErrorDetectedExpected, String decodedMessageExpected, String encodedMessage, boolean parity) {
         BigInt message = new BigInt(Long.parseLong(encodedMessage, 2));
         BigInt expectedMessage = new BigInt(Long.parseLong(decodedMessageExpected, 2));
-        Assertions.assertEquals(isErrorDetectedExpected, HammingCode.decode(message, parity));
+        Assertions.assertEquals(isErrorDetectedExpected, HammingCode.decode(message, parity, decodedMessageExpected.length()));
         Assertions.assertEquals(expectedMessage, message);
     }
 }

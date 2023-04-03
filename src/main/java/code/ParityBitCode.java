@@ -36,14 +36,19 @@ public final class ParityBitCode {
     }
 
     public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-        BigInt encodedMessage = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        encode(encodedMessage);
+        BigInt message;
+        BigInt encodedMessage;
+        BigInt corruptedMessage;
         int nbMessageWithIntegrity = 0;
         int nbCorruptedMessageCorrectlyDetected = 0;
 
-        BigInt corruptedMessage = new BigInt(encodedMessage);
         for (int i = 0; i < iterations; i++) {
+            message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+            encodedMessage = new BigInt(message);
+            encode(encodedMessage);
+            corruptedMessage = new BigInt(encodedMessage);
             SyntheticDataGenerator.corruptWord(corruptedMessage, p);
+
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {

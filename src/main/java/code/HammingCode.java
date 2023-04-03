@@ -41,14 +41,16 @@ public final class HammingCode {
     }
 
     /**
+     * Decode a message which was coded with the hamming code
      *
      * @param encodedMessage the encoded message which need to be decoded
      * @param parity
+     * @param k              the number of bits of the decodedMessage
      * @return true if an error was detected
      */
-    public static boolean decode(BigInt encodedMessage, boolean parity) {
+    public static boolean decode(BigInt encodedMessage, boolean parity, int k) {
         int leftMostSetBit = encodedMessage.getLeftMostSetBit();
-        int numberOfRedundancyBitsAdded = BitUtil.leftMostSetBit(leftMostSetBit);
+        int numberOfRedundancyBitsAdded = numberOfRedundancyBitsToAdd(k);
 
         int errorBitPosition = 0;
 
@@ -113,22 +115,27 @@ public final class HammingCode {
     }
 
     public static double[] getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-        BigInt encodedMessage = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        encode(encodedMessage, true, messageBitSize);
+        BigInt message;
+        BigInt encodedMessage;
+        BigInt corruptedMessage;
         int nbMessageWithIntegrity = 0;
         int nbCorruptedMessageCorrectlyDetected = 0;
         int nbCorruptedMessageCorrectlyCorrected = 0;
 
-        BigInt corruptedMessage = new BigInt(encodedMessage);
         for (int i = 0; i < iterations; i++) {
+            message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+            encodedMessage = new BigInt(message);
+            encode(encodedMessage, true, messageBitSize);
+            corruptedMessage = new BigInt(encodedMessage);
             SyntheticDataGenerator.corruptWord(corruptedMessage, p);
+
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {
-                if (decode(corruptedMessage, true)) {
+                if (decode(corruptedMessage, true, messageBitSize)) {
                     nbCorruptedMessageCorrectlyDetected++;
                 }
-                if (corruptedMessage.equals(encodedMessage)) {
+                if (corruptedMessage.toString().equals(message.toString())) {
                     nbCorruptedMessageCorrectlyCorrected++;
                 }
             }

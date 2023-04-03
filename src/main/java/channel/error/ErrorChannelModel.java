@@ -1,4 +1,4 @@
-package model;
+package channel.error;
 
 import math.BigInt;
 
