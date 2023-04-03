@@ -15,19 +15,19 @@ public class GenerateGraphCommand implements Command {
 
     @Override
     public void execute(ProgramParameter programParameter) throws IllegalArgumentException {
-        double[] x = new double[programParameter.getNumberOfStep()];
-        double[] y = new double[programParameter.getNumberOfStep()];
-        double[] z = new double[programParameter.getNumberOfStep()];
+        double[] probabilities = new double[programParameter.getNumberOfStep()];
+        double[] errorDetectingRates = new double[programParameter.getNumberOfStep()];
+        double[] errorCorrectingRates = new double[programParameter.getNumberOfStep()];
 
         double currentP = programParameter.getMinP();
         double pToAdd = (programParameter.getMaxP() - programParameter.getMinP()) / (programParameter.getNumberOfStep() - 1);
         double[] probabilityForCode;
         for (int i = 0; i < programParameter.getNumberOfStep(); i++) {
-            x[i] = currentP;
+            probabilities[i] = currentP;
             probabilityForCode = getProbabilitiesForCode(programParameter, programParameter.getDetectingCode(), currentP);
-            y[i] = probabilityForCode[0];
+            errorDetectingRates[i] = probabilityForCode[0];
             if (programParameter.isCanCorrectError()) {
-                z[i] = probabilityForCode[1];
+                errorCorrectingRates[i] = probabilityForCode[1];
             }
             currentP += pToAdd;
         }
@@ -35,10 +35,10 @@ public class GenerateGraphCommand implements Command {
         Plot2DPanel plot = new Plot2DPanel();
 
         plot.setAxisLabels("Probability of a bit being corrupted", "Error detection" + (programParameter.isCanCorrectError() ? "/correction" : "") + " rate");
-        plot.addLinePlot("Error detection rate", x, y);
+        plot.addLinePlot("Error detection rate", probabilities, errorDetectingRates);
 
         if (programParameter.isCanCorrectError()) {
-            plot.addLinePlot("Error correction rate", x, z);
+            plot.addLinePlot("Error correction rate", probabilities, errorCorrectingRates);
             plot.addLegend(PlotPanel.EAST);
         }
 
