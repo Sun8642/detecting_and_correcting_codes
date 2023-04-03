@@ -2,13 +2,14 @@ package model;
 
 import enums.DetectingCode;
 import enums.ErrorChannelModel;
-
-import java.math.BigInteger;
-import java.text.Normalizer;
+import enums.MainCommand;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
 import org.apache.commons.cli.CommandLine;
+
+import java.math.BigInteger;
+import java.text.Normalizer;
 
 @Getter
 @Setter
@@ -77,6 +78,17 @@ public class ProgramParameter {
         if (line.hasOption(ProgramOption.MESSAGE)) {
             setMessage(line.getOptionValue(ProgramOption.MESSAGE));
         }
+    }
+
+    public static MainCommand parseMainCommand(String mainCommand) {
+        //https://www.baeldung.com/java-remove-accents-from-text
+        mainCommand = Normalizer.normalize(mainCommand.trim().toLowerCase(), Normalizer.Form.NFKD).replaceAll("\\p{M}", "");
+        for (MainCommand command : MainCommand.values()) {
+            if (mainCommand.equals(command.getArgumentName().toLowerCase())) {
+                return command;
+            }
+        }
+        throw new IllegalArgumentException("The command given in parameter is not valid: " + mainCommand);
     }
 
     public static DetectingCode parseCode(String code) {

@@ -6,14 +6,12 @@ import code.InternetChecksum;
 import code.ParityBitCode;
 import model.ProgramParameter;
 
-import java.math.BigInteger;
-
 public class DecodeCommand implements Command {
 
     @Override
     public void execute(ProgramParameter programParameter) throws IllegalArgumentException {
         decodeMessage(programParameter);
-        System.out.println(new BigInteger(programParameter.getMessage().toString()).toString(2));
+        System.out.println(programParameter.getMessage().toBinaryString());
     }
 
     private void decodeMessage(ProgramParameter programParameter) throws IllegalArgumentException {

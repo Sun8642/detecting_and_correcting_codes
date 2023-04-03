@@ -6,14 +6,12 @@ import code.InternetChecksum;
 import code.ParityBitCode;
 import model.ProgramParameter;
 
-import java.math.BigInteger;
-
 public class EncodeCommand implements Command {
 
     @Override
     public void execute(ProgramParameter programParameter) throws IllegalArgumentException {
         encodeMessage(programParameter);
-        System.out.println(new BigInteger(programParameter.getMessage().toString()).toString(2));
+        System.out.println(programParameter.getMessage().toBinaryString());
     }
 
     private void encodeMessage(ProgramParameter programParameter) throws IllegalArgumentException {
@@ -30,7 +28,8 @@ public class EncodeCommand implements Command {
             case HAMMING_CODE -> {
                 HammingCode.encode(programParameter.getMessage(), true, programParameter.getMessageBitSize());
             }
-            default -> throw new IllegalArgumentException("Couldn't encode message for code: " + programParameter.getDetectingCode().getArgumentName());
+            default ->
+                    throw new IllegalArgumentException("Couldn't encode message for code: " + programParameter.getDetectingCode().getArgumentName());
         }
     }
 }

@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import math.BigInt;
 
 import java.math.BigInteger;
-import java.util.BitSet;
-import java.util.Random;
 import java.util.SplittableRandom;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,6 +14,11 @@ public final class SyntheticDataGenerator {
 
     public static BigInt getRandomWord(int numberOfBits) {
         return new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+    }
+
+    public static String getRandomWordToString(int numberOfBits) {
+        String binaryString = new BigInteger(new BigInt(numberOfBits, SPLITTABLE_RANDOM).toString()).toString(2);
+        return binaryString.length() < numberOfBits ? "0".repeat(numberOfBits - binaryString.length()) + binaryString : binaryString;
     }
 
     public static void corruptWord(BigInt message, double p) {

@@ -219,6 +219,10 @@ public class BigInt extends Number implements Comparable<BigInt> {
         add(rightVal);
     }
 
+    public String toBinaryString() {
+        return new BigInteger(toString()).toString(2);
+    }
+
     /*** <Constructors> ***/
     /**
      * Creates a BigInt from the given parameters.

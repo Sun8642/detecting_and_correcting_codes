@@ -2,12 +2,18 @@ package model;
 
 import enums.DetectingCode;
 import enums.ErrorChannelModel;
-import lombok.Getter;
+import enums.MainCommand;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 public class ProgramOption {
 
+    public static final Option MAIN_COMMAND = Option.builder("MC")
+            .longOpt("mainCommand")
+            .desc("The functionality to use. Valid commands are: " + MainCommand.getArgumentNamesForConsole())
+            .required(true)
+            .hasArg()
+            .build();
     public static final Option CODE = Option.builder("C")
             .longOpt("code")
             .desc("The code to use to encode and decode messages. Valid codes are: " + DetectingCode.getArgumentNamesForConsole())
@@ -62,33 +68,45 @@ public class ProgramOption {
             .hasArg()
             .build();
 
-    @Getter
-    private final Options encodeDecodeOptions = new Options();
-    @Getter
-    private final Options graphOptions = new Options();
-    @Getter
-    private final Options generateMessageOptions = new Options();
-    @Getter
-    private final Options corruptMessageOptions = new Options();
+    public static final Options MAIN_OPTIONS = new Options();
 
-    public ProgramOption() {
-        encodeDecodeOptions.addOption(CODE);
-        encodeDecodeOptions.addOption(MESSAGE);
-        encodeDecodeOptions.addOption(GENERATOR_POLYNOMIAL);
+    static {
+        MAIN_OPTIONS.addOption(MAIN_COMMAND);
+    }
 
-        graphOptions.addOption(CODE);
-        graphOptions.addOption(ERROR_CHANNEL_MODEL);
-        graphOptions.addOption(BURST_LENGTH);
-        graphOptions.addOption(MESSAGE_BIT_SIZE);
-        graphOptions.addOption(MIN_P);
-        graphOptions.addOption(MAX_P);
-        graphOptions.addOption(ITERATIONS_PER_P);
-        graphOptions.addOption(NB_STEP_PER_P);
-        graphOptions.addOption(GENERATOR_POLYNOMIAL);
+    public static final Options ENCODE_DECODE_OPTIONS = new Options();
 
-        generateMessageOptions.addOption(MESSAGE_BIT_SIZE);
+    static {
+        ENCODE_DECODE_OPTIONS.addOption(CODE);
+        ENCODE_DECODE_OPTIONS.addOption(MESSAGE);
+        ENCODE_DECODE_OPTIONS.addOption(GENERATOR_POLYNOMIAL);
+    }
 
-        corruptMessageOptions.addOption(P);
-        //TODO: error type
+    public static final Options GENERATE_GRAPH_OPTIONS = new Options();
+
+    static {
+        GENERATE_GRAPH_OPTIONS.addOption(CODE);
+        GENERATE_GRAPH_OPTIONS.addOption(ERROR_CHANNEL_MODEL);
+        GENERATE_GRAPH_OPTIONS.addOption(BURST_LENGTH);
+        GENERATE_GRAPH_OPTIONS.addOption(MESSAGE_BIT_SIZE);
+        GENERATE_GRAPH_OPTIONS.addOption(MIN_P);
+        GENERATE_GRAPH_OPTIONS.addOption(MAX_P);
+        GENERATE_GRAPH_OPTIONS.addOption(ITERATIONS_PER_P);
+        GENERATE_GRAPH_OPTIONS.addOption(NB_STEP_PER_P);
+        GENERATE_GRAPH_OPTIONS.addOption(GENERATOR_POLYNOMIAL);
+    }
+
+    public static final Options GENERATE_MESSAGE_OPTIONS = new Options();
+
+    static {
+        GENERATE_MESSAGE_OPTIONS.addOption(MESSAGE_BIT_SIZE);
+    }
+
+    public static final Options CORRUPT_MESSAGE_OPTIONS = new Options();
+
+    static {
+        CORRUPT_MESSAGE_OPTIONS.addOption(P);
+        CORRUPT_MESSAGE_OPTIONS.addOption(ERROR_CHANNEL_MODEL);
+        CORRUPT_MESSAGE_OPTIONS.addOption(BURST_LENGTH);
     }
 }

@@ -3,6 +3,7 @@ package model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import math.BigInt;
 
 @Getter
 @Setter
@@ -12,13 +13,11 @@ public class ConstantErrorChannelModel implements ErrorChannelModel {
     private double errorRate;
 
     @Override
-    public String corrupt(String message) {
-        StringBuilder stringBuilder = new StringBuilder(message);
-        for (int i = 0; i < message.length(); i++) {
+    public void corrupt(BigInt message, int messageBitSize) {
+        for (int i = messageBitSize - 1; i >= 0; i--) {
             if (Math.random() <= errorRate) {
-                stringBuilder.replace(i, i + 1, message.charAt(i) == '0' ? "1" : "0");
+                message.flipBit(i);
             }
         }
-        return stringBuilder.toString();
     }
 }

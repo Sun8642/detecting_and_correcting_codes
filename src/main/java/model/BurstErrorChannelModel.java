@@ -3,6 +3,7 @@ package model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import math.BigInt;
 
 @Getter
 @Setter
@@ -13,14 +14,20 @@ public class BurstErrorChannelModel implements ErrorChannelModel {
     private int burstLength;
 
     @Override
-    public String corrupt(String message) {
-        StringBuilder stringBuilder = new StringBuilder(message);
-        for (int i = 0; i < message.length(); i++) {
+    public void corrupt(BigInt message, int messageBitSize) {
+        for (int i = messageBitSize - 1; i >= 0; i--) {
             if (Math.random() <= errorRate) {
-                stringBuilder.replace(i, Math.min(i + burstLength, message.length()), message.charAt(i) == '0' ? "1" : "0");
-                i += (burstLength - 1);
+                message.flipBit(i);
+                if (i != 0) {
+                    for (int j = i - 1; j >= Math.max(1, i - (burstLength - 1)); j--) {
+                        if (Math.random() <= errorRate) {
+                            message.flipBit(j);
+                        }
+                    }
+                    i -= (burstLength - 1);
+                    message.flipBit(Math.max(i, 0));
+                }
             }
         }
-        return stringBuilder.toString();
     }
 }
