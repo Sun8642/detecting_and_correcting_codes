@@ -20,7 +20,7 @@ import java.text.Normalizer;
 
 @Getter
 @Setter
-public class ProgramParameter {
+public class CommandLineParameter {
 
     public static final String ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE = "The polynomial generator must be greater or equals to 10 (in binary representation).";
 

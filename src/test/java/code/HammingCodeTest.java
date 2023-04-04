@@ -43,6 +43,11 @@ public class HammingCodeTest {
             "false,1010,1010010,true",
             "false,1010,1011001,false",
 
+            //code(7,4) with error(s)
+            "true,0000,0000100,true",   //original message: 0000000 a message bit was modified
+            "true,0000,0001001,false",  //original message: 0001011 a redundancy bit was modified
+            "true,1010,1001001,false",  //original message: 0001011 2 bits modified -> original message cannot be retrieved
+
             //code(15,11) No error
             "false,00000000000,000000000000000,true",
             "false,00000000000,000000010001011,false",
@@ -50,6 +55,11 @@ public class HammingCodeTest {
             "false,11111111111,111111101110100,false",
             "false,10001101001,100011011000110,true",
             "false,10001101001,100011001001101,false",
+
+            //code(15,11) with error(s)
+            "true,10001101001,110011011000110,true",    //original message: 100011011000110 a message bit was modified
+            "true,10001101001,100011001001100,false",   //original message: 100011001001101 a redundancy bit was modified
+            "true,10010100001,100101001001101,false",   //original message: 100011001001101 2 bits modified -> original message cannot be retrieved
     })
     public void decode(boolean isErrorDetectedExpected, String decodedMessageExpected, String encodedMessage, boolean parity) {
         BigInt message = new BigInt(Long.parseLong(encodedMessage, 2));

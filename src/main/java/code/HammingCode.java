@@ -139,8 +139,6 @@ public final class HammingCode implements Code {
      * @return the number of redundancy bits added in an encoded message
      */
     public static int numberOfRedundancyBitsAdded(int encodedMessageLength) {
-//        return (int) Math.sqrt(((double) encodedMessageLength + 1));
-//        return (int) Math.lo(((double) encodedMessageLength + 1));
         return BitUtil.binLog(encodedMessageLength + 1);
     }
 

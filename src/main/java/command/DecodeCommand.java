@@ -1,12 +1,12 @@
 package command;
 
-import model.ProgramParameter;
+import model.CommandLineParameter;
 
 public class DecodeCommand implements Command {
 
     @Override
-    public void execute(ProgramParameter programParameter) throws IllegalArgumentException {
-        programParameter.getCode().decode(programParameter.getMessage(), programParameter.getMessageBitSize());
-        System.out.println(programParameter.getMessage().toBinaryString(programParameter.getCode().getK()));
+    public void execute(CommandLineParameter commandLineParameter) throws IllegalArgumentException {
+        commandLineParameter.getCode().decode(commandLineParameter.getMessage(), commandLineParameter.getMessageBitSize());
+        System.out.println(commandLineParameter.getMessage().toBinaryString(commandLineParameter.getCode().getK()));
     }
 }

@@ -1,8 +1,8 @@
 package command;
 
-import model.ProgramParameter;
+import model.CommandLineParameter;
 
 public interface Command {
 
-    void execute(ProgramParameter programParameter) throws IllegalArgumentException;
+    void execute(CommandLineParameter commandLineParameter) throws IllegalArgumentException;
 }
