@@ -11,7 +11,9 @@ public interface ErrorChannelModel {
     /**
      * Corrupts a message by introducing errors according to the specific error model.
      *
-     * @param message the message to be corrupted
+     * @param message        the message to be corrupted
+     * @param messageBitSize the size of the message
+     * @param errorRate      the error rate of the channel
      */
-    void corrupt(BigInt message, int messageBitSize);
+    void corrupt(BigInt message, int messageBitSize, double errorRate);
 }

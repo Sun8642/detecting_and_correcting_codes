@@ -1,10 +1,5 @@
 package command;
 
-import code.CyclicRedundancyCode;
-import code.HammingCode;
-import code.InternetChecksum;
-import code.ParityBitCode;
-import enums.DetectingCode;
 import model.ProgramParameter;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
@@ -24,9 +19,14 @@ public class GenerateGraphCommand implements Command {
         double[] probabilityForCode;
         for (int i = 0; i < programParameter.getNumberOfStep(); i++) {
             probabilities[i] = currentP;
-            probabilityForCode = getProbabilitiesForCode(programParameter, programParameter.getDetectingCode(), currentP);
+            probabilityForCode = programParameter.getCode().getErrorDetectionRate(
+                    programParameter.getNumberOfIterationsPerProbability(),
+                    programParameter.getP(),
+                    programParameter.getMessageBitSize(),
+                    programParameter.getErrorChannelModelImpl()
+            );
             errorDetectingRates[i] = probabilityForCode[0];
-            if (programParameter.isCanCorrectError()) {
+            if (programParameter.getCode().canCorrectError()) {
                 errorCorrectingRates[i] = probabilityForCode[1];
             }
             currentP += pToAdd;
@@ -34,36 +34,17 @@ public class GenerateGraphCommand implements Command {
 
         Plot2DPanel plot = new Plot2DPanel();
 
-        plot.setAxisLabels("Probability of a bit being corrupted", "Error detection" + (programParameter.isCanCorrectError() ? "/correction" : "") + " rate");
+        plot.setAxisLabels("Probability of a bit being corrupted", "Error detection" + (programParameter.getCode().canCorrectError() ? "/correction" : "") + " rate");
         plot.addLinePlot("Error detection rate", probabilities, errorDetectingRates);
 
-        if (programParameter.isCanCorrectError()) {
+        if (programParameter.getCode().canCorrectError()) {
             plot.addLinePlot("Error correction rate", probabilities, errorCorrectingRates);
             plot.addLegend(PlotPanel.EAST);
         }
 
-        JFrame frame = new JFrame("Error detection" + (programParameter.isCanCorrectError() ? "/correction" : "") + " rate with code: " + programParameter.getDetectingCode().getArgumentName());
+        JFrame frame = new JFrame("Error detection" + (programParameter.getCode().canCorrectError() ? "/correction" : "") + " rate with code: " + programParameter.getDetectingCode().getArgumentName());
         frame.setContentPane(plot);
         frame.setVisible(true);
         frame.setSize(1000, 600);
-    }
-
-    private static double[] getProbabilitiesForCode(ProgramParameter programParameter, DetectingCode code, double p) {
-        switch (code) {
-            case PARITY_BIT_CODE -> {
-                return new double[]{ParityBitCode.getErrorDetectionRate(programParameter.getNumberOfIterationsPerProbability(), p, programParameter.getMessageBitSize())};
-            }
-            case INTERNET_CHECKSUM -> {
-                return new double[]{InternetChecksum.getErrorDetectionRate(programParameter.getNumberOfIterationsPerProbability(), p, programParameter.getMessageBitSize())};
-            }
-            case CYCLIC_REDUNDANCY_CODE -> {
-                return new double[]{CyclicRedundancyCode.getErrorDetectionRate(programParameter.getNumberOfIterationsPerProbability(), p,
-                        programParameter.getMessageBitSize(), programParameter.getGeneratorPolynomial())};
-            }
-            case HAMMING_CODE -> {
-                return HammingCode.getErrorDetectionRate(programParameter.getNumberOfIterationsPerProbability(), p, programParameter.getMessageBitSize());
-            }
-            default -> throw new IllegalArgumentException("No code provided or no implementation found");
-        }
     }
 }

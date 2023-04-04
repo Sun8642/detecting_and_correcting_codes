@@ -1,13 +1,8 @@
 package util;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.math.BigInteger;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class BitUtilTest {
 
@@ -46,5 +41,18 @@ public class BitUtilTest {
     })
     public void isNotPowerOfTwo(boolean expected, int number) {
         Assertions.assertEquals(expected, BitUtil.isNotPowerOfTwo(number));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,2",
+            "2,4",
+            "3,8",
+            "4,16",
+            "5,32",
+            "6,64",
+    })
+    public void binLog(int expected, int number) {
+        Assertions.assertEquals(expected, BitUtil.binLog(number));
     }
 }

@@ -1,5 +1,12 @@
 package model;
 
+import channel.error.BurstErrorChannelModel;
+import channel.error.ConstantErrorChannelModel;
+import code.Code;
+import code.CyclicRedundancyCode;
+import code.HammingCode;
+import code.InternetChecksum;
+import code.ParityBitCode;
 import enums.DetectingCode;
 import enums.ErrorChannelModel;
 import enums.MainCommand;
@@ -16,8 +23,6 @@ import java.text.Normalizer;
 public class ProgramParameter {
 
     public static final String ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE = "The polynomial generator must be greater or equals to 10 (in binary representation).";
-    protected DetectingCode detectingCode;
-    protected ErrorChannelModel errorChannelModel = ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL;
 
     protected int numberOfIterationsPerProbability = 10000;
 
@@ -28,24 +33,16 @@ public class ProgramParameter {
     protected double p = 0.1d;
     protected int numberOfStep = 50;
 
-    protected boolean canCorrectError = false;
-
     protected int burstErrorLength = 3;
     private BigInt generatorPolynomial = new BigInt(Long.parseLong("1011", 2));
     private BigInt message;
 
+    protected DetectingCode detectingCode;
+    protected Code code;
+    protected ErrorChannelModel errorChannelModel = ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL;
+    protected channel.error.ErrorChannelModel errorChannelModelImpl = new ConstantErrorChannelModel();
+
     public void setParameters(CommandLine line) {
-        if (line.hasOption(CommandLineOption.CODE)) {
-            detectingCode = parseCode(line.getOptionValue(CommandLineOption.CODE));
-            if (DetectingCode.HAMMING_CODE.equals(detectingCode)) {
-                canCorrectError = true;
-            }
-        }
-
-        if (line.hasOption(CommandLineOption.ERROR_CHANNEL_MODEL)) {
-            errorChannelModel = parseErrorModel(line.getOptionValue(CommandLineOption.ERROR_CHANNEL_MODEL));
-        }
-
         if (line.hasOption(CommandLineOption.BURST_LENGTH)) {
             setBurstErrorLength(Integer.parseInt(line.getOptionValue(CommandLineOption.BURST_LENGTH)));
         }
@@ -84,6 +81,24 @@ public class ProgramParameter {
             setMessageBitSize(messageFromOption.length());
             if (line.hasOption(CommandLineOption.MESSAGE_BIT_SIZE) && Integer.parseInt(line.getOptionValue(CommandLineOption.MESSAGE_BIT_SIZE)) != messageFromOption.length()) {
                 System.out.println("Warning, overriding message bit size by the length of the message.");
+            }
+        }
+
+        if (line.hasOption(CommandLineOption.ERROR_CHANNEL_MODEL)) {
+            errorChannelModel = parseErrorModel(line.getOptionValue(CommandLineOption.ERROR_CHANNEL_MODEL));
+            switch (errorChannelModel) {
+                case CONSTANT_ERROR_CHANNEL_MODEL -> errorChannelModelImpl = new ConstantErrorChannelModel();
+                case BURST_ERROR_CHANNEL_MODEL -> errorChannelModelImpl = new BurstErrorChannelModel(burstErrorLength);
+            }
+        }
+
+        if (line.hasOption(CommandLineOption.CODE)) {
+            detectingCode = parseCode(line.getOptionValue(CommandLineOption.CODE));
+            switch (detectingCode) {
+                case CYCLIC_REDUNDANCY_CODE -> code = new CyclicRedundancyCode(generatorPolynomial);
+                case HAMMING_CODE -> code = new HammingCode();
+                case INTERNET_CHECKSUM -> code = new InternetChecksum();
+                case PARITY_BIT_CODE -> code = new ParityBitCode();
             }
         }
     }

@@ -1,13 +1,18 @@
 package code;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import channel.error.ErrorChannelModel;
+import lombok.Getter;
+import lombok.Setter;
 import math.BigInt;
 import util.ProbabilityError;
 import util.SyntheticDataGenerator;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ParityBitCode {
+@Getter
+@Setter
+public class ParityBitCode implements Code {
+
+    private int k;
+    private int n;
 
     public static double getProbabilityOfDetectingError(int N, double p) {
         double probabilityOfDetectingError = 0.d;
@@ -17,25 +22,29 @@ public final class ParityBitCode {
         return 1 - probabilityOfDetectingError;
     }
 
-    public static void encode(BigInt message) {
+    public void encode(BigInt message, int k) {
+        this.k = k;
+        n = k + 1;
         message.shiftLeft(1);
         if (message.getBitCount() % 2 != 0) {
             message.add(1);
         }
     }
 
-    public static void decode(BigInt encodedMessage) {
+    public void decode(BigInt encodedMessage, int n) {
         if (isCorrupted(encodedMessage)) {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
         }
+        this.n = n;
+        k = n - 1;
         encodedMessage.shiftRight(1);
     }
 
-    public static boolean isCorrupted(BigInt message) {
+    public boolean isCorrupted(BigInt message) {
         return message.getBitCount() % 2 != 0;
     }
 
-    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
+    public double[] getErrorDetectionRate(int iterations, double p, int messageBitSize, ErrorChannelModel errorChannelModel) {
         BigInt message;
         BigInt encodedMessage;
         BigInt corruptedMessage;
@@ -45,9 +54,9 @@ public final class ParityBitCode {
         for (int i = 0; i < iterations; i++) {
             message = SyntheticDataGenerator.getRandomWord(messageBitSize);
             encodedMessage = new BigInt(message);
-            encode(encodedMessage);
+            encode(encodedMessage, messageBitSize);
             corruptedMessage = new BigInt(encodedMessage);
-            SyntheticDataGenerator.corruptWord(corruptedMessage, p);
+            errorChannelModel.corrupt(corruptedMessage, n, p);
 
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
@@ -58,8 +67,8 @@ public final class ParityBitCode {
             }
         }
         if (iterations - nbMessageWithIntegrity == 0) {
-            return 1.d;
+            return new double[]{1.d};
         }
-        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
+        return new double[]{(double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity)};
     }
 }

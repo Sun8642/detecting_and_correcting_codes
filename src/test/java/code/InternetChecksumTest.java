@@ -17,7 +17,8 @@ public class InternetChecksumTest {
     })
     public void encode(String expected, String message) {
         BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
-        InternetChecksum.encode(encodedMessage);
+        InternetChecksum code = new InternetChecksum();
+        code.encode(encodedMessage, message.length());
         Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
     }
 
@@ -28,13 +29,18 @@ public class InternetChecksumTest {
     })
     public void decode(String expected, String message) {
         BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
-        InternetChecksum.decode(encodedMessage);
+        InternetChecksum code = new InternetChecksum();
+        code.decode(encodedMessage, message.length());
         Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
     }
 
     @Test
     public void decode_whenMessageIsCorrupted_shouldThrowException() {
-        Assertions.assertThrows(RuntimeException.class, () -> InternetChecksum.decode((new BigInt(Long.parseLong("00000100000000001111111111111111", 2)))));
+        InternetChecksum code = new InternetChecksum();
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            String message = "00000100000000001111111111111111";
+            code.decode((new BigInt(Long.parseLong(message, 2))), message.length());
+        });
     }
 
     @ParameterizedTest
@@ -43,7 +49,8 @@ public class InternetChecksumTest {
             "1011010100111101,011001100110000001010101010101011000111100001100"
     })
     public void getChecksum(String expected, String message) {
-        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), InternetChecksum.getChecksum(new BigInt(Long.parseLong(message, 2))));
+        InternetChecksum code = new InternetChecksum();
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), code.getChecksum(new BigInt(Long.parseLong(message, 2))));
     }
 
     @ParameterizedTest
@@ -62,6 +69,7 @@ public class InternetChecksumTest {
             "false,0110011001100000010101010101010110001111000010101011010100111111",  //Corrupted, the 14th and 15th bit of the last word and the 15th bit of the checksum were flipped
     })
     public void isCorrupted(boolean isCorrupted, String encodedMessage) {
-        Assertions.assertEquals(isCorrupted, InternetChecksum.isCorrupted(BigInt.from(new BigInteger(encodedMessage, 2))));
+        InternetChecksum code = new InternetChecksum();
+        Assertions.assertEquals(isCorrupted, code.isCorrupted(BigInt.from(new BigInteger(encodedMessage, 2))));
     }
 }

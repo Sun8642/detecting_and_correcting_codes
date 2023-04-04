@@ -9,27 +9,79 @@ public class HammingCodeTest {
 
     @ParameterizedTest
     @CsvSource({
-            "01100000100,0110001,true",
-            "110011010010,11001010,false"
+            //code(7,4)
+            "0000000,0000,true",
+            "0001011,0000,false",
+            "1111111,1111,true",
+            "1110100,1111,false",
+            "1010010,1010,true",
+            "1011001,1010,false",
+
+            //code(15,11)
+            "000000000000000,00000000000,true",
+            "000000010001011,00000000000,false",
+            "111111111111111,11111111111,true",
+            "111111101110100,11111111111,false",
+            "100011011000110,10001101001,true",
+            "100011001001101,10001101001,false",
     })
     public void encode(String expected, String messageToEncode, boolean parity) {
         BigInt messageToEncodeBigInt = new BigInt(Long.parseLong(messageToEncode, 2));
-        HammingCode.encode(messageToEncodeBigInt, parity, messageToEncode.length());
+        HammingCode code = new HammingCode();
+        code.setParity(parity);
+        code.encode(messageToEncodeBigInt, messageToEncode.length());
         Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), messageToEncodeBigInt);
     }
 
     @ParameterizedTest
     @CsvSource({
-            "false,0110001,01100000100,true",     //No error
-            "false,11001010,110011010010,false",  //No error
-            "true,0110001,01100000101,true",     //One error
-            "true,0110001,01100100100,true",     //One error
-            "true,0110110,01100110100,true",     //Two error, original message: 0110001, error can't be corrected correctly
+            //code(7,4) No error
+            "false,0000,0000000,true",
+            "false,0000,0001011,false",
+            "false,1111,1111111,true",
+            "false,1111,1110100,false",
+            "false,1010,1010010,true",
+            "false,1010,1011001,false",
+
+            //code(15,11) No error
+            "false,00000000000,000000000000000,true",
+            "false,00000000000,000000010001011,false",
+            "false,11111111111,111111111111111,true",
+            "false,11111111111,111111101110100,false",
+            "false,10001101001,100011011000110,true",
+            "false,10001101001,100011001001101,false",
     })
     public void decode(boolean isErrorDetectedExpected, String decodedMessageExpected, String encodedMessage, boolean parity) {
         BigInt message = new BigInt(Long.parseLong(encodedMessage, 2));
         BigInt expectedMessage = new BigInt(Long.parseLong(decodedMessageExpected, 2));
-        Assertions.assertEquals(isErrorDetectedExpected, HammingCode.decode(message, parity, decodedMessageExpected.length()));
+        HammingCode code = new HammingCode();
+        code.setParity(parity);
+        code.decode(message, encodedMessage.length());
+        Assertions.assertEquals(isErrorDetectedExpected, code.isErrorDetected());
         Assertions.assertEquals(expectedMessage, message);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "3,4",
+            "4,11",
+            "5,26",
+            "6,57",
+            "7,120",
+    })
+    public void numberOfRedundancyBitsToAdd(int expected, int messageLength) {
+        Assertions.assertEquals(expected, HammingCode.numberOfRedundancyBitsToAdd(messageLength));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "3,7",
+            "4,15",
+            "5,31",
+            "6,63",
+            "7,127",
+    })
+    public void numberOfRedundancyBitsAdded(int expected, int encodedMessageLength) {
+        Assertions.assertEquals(expected, HammingCode.numberOfRedundancyBitsAdded(encodedMessageLength));
     }
 }

@@ -1,16 +1,30 @@
 package code;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import channel.error.ErrorChannelModel;
+import lombok.Getter;
+import lombok.Setter;
 import math.BigInt;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class HammingCode {
+@Getter
+@Setter
+public final class HammingCode implements Code {
 
-    public static void encode(BigInt message, boolean parity, int k) {
+    private int k;
+    private int n;
+    private boolean parity = true;
+    private boolean isErrorDetected;
+
+    @Override
+    public boolean canCorrectError() {
+        return true;
+    }
+
+    public void encode(BigInt message, int k) {
+        setK(k);
         int numberOfRedundancyBitsToAdd = numberOfRedundancyBitsToAdd(k);
+        n = k + numberOfRedundancyBitsToAdd;
 
         //Transform block into coded block with all the redundancy bit initialized at 0 (to have the final positions of non redundancy bits)
         for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
@@ -40,17 +54,24 @@ public final class HammingCode {
         }
     }
 
+    public void setK(int k) {
+        if (!HammingCode.isKValid(k)) {
+            throw new IllegalArgumentException("The number of bits per message plus the number of redundancy bits for " +
+                    "this number minus one must be equals to a power of 2 (e.g. code(7, 4), code(15,11), ...).");
+        }
+        this.k = k;
+    }
+
     /**
      * Decode a message which was coded with the hamming code
      *
      * @param encodedMessage the encoded message which need to be decoded
-     * @param parity
-     * @param k              the number of bits of the decodedMessage
-     * @return true if an error was detected
      */
-    public static boolean decode(BigInt encodedMessage, boolean parity, int k) {
+    public void decode(BigInt encodedMessage, int n) {
+        this.n = n;
         int leftMostSetBit = encodedMessage.getLeftMostSetBit();
-        int numberOfRedundancyBitsAdded = numberOfRedundancyBitsToAdd(k);
+        int numberOfRedundancyBitsAdded = numberOfRedundancyBitsAdded(n);
+        setK(n - numberOfRedundancyBitsAdded);
 
         int errorBitPosition = 0;
 
@@ -86,7 +107,7 @@ public final class HammingCode {
             indexToRemove >>= 1;
         }
 
-        return errorBitPosition != 0;
+        isErrorDetected = errorBitPosition != 0;
     }
 
     private static boolean isRedundancyBitIncorrect(int bitPosition, int numberOfOneForBitPosition, BigInt encodedMessage, boolean parity) {
@@ -110,11 +131,24 @@ public final class HammingCode {
         return n;
     }
 
+    /**
+     * This method wil return the number of redundancy bits added in given the parameter n.
+     * This method will only work for perfect hamming code.
+     *
+     * @param encodedMessageLength the length of an encoded message
+     * @return the number of redundancy bits added in an encoded message
+     */
+    public static int numberOfRedundancyBitsAdded(int encodedMessageLength) {
+//        return (int) Math.sqrt(((double) encodedMessageLength + 1));
+//        return (int) Math.lo(((double) encodedMessageLength + 1));
+        return BitUtil.binLog(encodedMessageLength + 1);
+    }
+
     public static boolean isKValid(int k) {
         return k >= 4 && BitUtil.isPowerOfTwo(k + numberOfRedundancyBitsToAdd(k) + 1);
     }
 
-    public static double[] getErrorDetectionRate(int iterations, double p, int messageBitSize) {
+    public double[] getErrorDetectionRate(int iterations, double p, int messageBitSize, ErrorChannelModel errorChannelModel) {
         BigInt message;
         BigInt encodedMessage;
         BigInt corruptedMessage;
@@ -125,14 +159,15 @@ public final class HammingCode {
         for (int i = 0; i < iterations; i++) {
             message = SyntheticDataGenerator.getRandomWord(messageBitSize);
             encodedMessage = new BigInt(message);
-            encode(encodedMessage, true, messageBitSize);
+            encode(encodedMessage, messageBitSize);
             corruptedMessage = new BigInt(encodedMessage);
-            SyntheticDataGenerator.corruptWord(corruptedMessage, p);
+            errorChannelModel.corrupt(corruptedMessage, n, p);
 
             if (encodedMessage.equals(corruptedMessage)) {
                 nbMessageWithIntegrity++;
             } else {
-                if (decode(corruptedMessage, true, messageBitSize)) {
+                decode(corruptedMessage, n);
+                if (isErrorDetected) {
                     nbCorruptedMessageCorrectlyDetected++;
                 }
                 if (corruptedMessage.toString().equals(message.toString())) {

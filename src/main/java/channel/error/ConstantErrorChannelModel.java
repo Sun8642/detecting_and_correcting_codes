@@ -10,10 +10,8 @@ import math.BigInt;
 @AllArgsConstructor
 public class ConstantErrorChannelModel implements ErrorChannelModel {
 
-    private double errorRate;
-
     @Override
-    public void corrupt(BigInt message, int messageBitSize) {
+    public void corrupt(BigInt message, int messageBitSize, double errorRate) {
         for (int i = messageBitSize - 1; i >= 0; i--) {
             if (Math.random() <= errorRate) {
                 message.flipBit(i);

@@ -4,17 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum DetectingCode {
-    PARITY_BIT_CODE("parityBit", false),
-    CYCLIC_REDUNDANCY_CODE("CRC", false),
-    INTERNET_CHECKSUM("internetChecksum", false),
-    HAMMING_CODE("hamming", true);
+    PARITY_BIT_CODE("parityBit"),
+    CYCLIC_REDUNDANCY_CODE("CRC"),
+    INTERNET_CHECKSUM("internetChecksum"),
+    HAMMING_CODE("hamming");
 
     private final String argumentName;
-    private final boolean canCorrectError;
 
-    DetectingCode(String argumentName, boolean canCorrectError) {
+    DetectingCode(String argumentName) {
         this.argumentName = argumentName;
-        this.canCorrectError = canCorrectError;
     }
 
     public static String getArgumentNamesForConsole() {
