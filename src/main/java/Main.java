@@ -18,6 +18,7 @@ public class Main {
     private static final String APPLICATION_NAME = "myApp";
 
     public static void main(String[] args) {
+        MainCommand mainCommand = null;
         Options options = CommandLineOption.MAIN_OPTIONS;
         CommandLineParser parser = new DefaultParser();
         try {
@@ -25,7 +26,7 @@ public class Main {
                 throw new IllegalArgumentException("No command given in parameter");
             }
             Command command;
-            MainCommand mainCommand = CommandLineParameter.parseMainCommand(args[0]);
+            mainCommand = CommandLineParameter.parseMainCommand(args[0]);
             CommandLineParameter commandLineParameter = new CommandLineParameter();
 
             switch (mainCommand) {
@@ -59,7 +60,7 @@ public class Main {
             // oops, something went wrong
             System.err.println("Parsing failed. Reason: " + exp.getMessage());
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(APPLICATION_NAME, options, true);
+            formatter.printHelp(APPLICATION_NAME + (mainCommand != null ? " " + mainCommand.getArgumentName() : ""), options, true);
         }
     }
 }

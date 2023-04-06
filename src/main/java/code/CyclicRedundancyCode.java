@@ -26,23 +26,26 @@ public final class CyclicRedundancyCode implements Code {
         message.add(getPolynomialArithmeticModulo2(message, generatorPolynomial));
     }
 
-    public BigInt getPolynomialArithmeticModulo2(BigInt dividend, BigInt divisor) {
+    public static BigInt getPolynomialArithmeticModulo2(BigInt dividend, BigInt divisor) {
         BigInt remainder = new BigInt(dividend);
-        divisor = new BigInt(divisor);
         int remainderLeftMostSetBit = remainder.getLeftMostSetBit();
-        int newRemainderLeftMostSetBit;
         int divisorLeftMostSetBit = divisor.getLeftMostSetBit();
 
-        if (remainderLeftMostSetBit > divisorLeftMostSetBit) {
-            divisor.shiftLeft(remainderLeftMostSetBit - divisorLeftMostSetBit);
-        }
-
+        int i, remainderBitToModify;
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
-//            remainder.xor(divisor);
-            remainder.xor2(divisor);
-            newRemainderLeftMostSetBit = remainder.getLeftMostSetBit();
-            divisor.shiftRight(remainderLeftMostSetBit - newRemainderLeftMostSetBit);
-            remainderLeftMostSetBit -= (remainderLeftMostSetBit - newRemainderLeftMostSetBit);
+            i = 0;
+            while (i < divisorLeftMostSetBit) {
+                if (divisor.testBit(divisorLeftMostSetBit - 1 - i)) {
+                    remainderBitToModify = remainderLeftMostSetBit - 1 - i;
+                    if (remainder.testBit(remainderBitToModify)) {
+                        remainder.clearBit(remainderBitToModify);
+                    } else {
+                        remainder.setBit(remainderBitToModify);
+                    }
+                }
+                i++;
+            }
+            remainderLeftMostSetBit = remainder.getLeftMostSetBit();
         }
         return remainder;
     }
