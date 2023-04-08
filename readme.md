@@ -30,13 +30,74 @@ If you forget one parameter, the format helper will print the usage of the funct
 
 You can always use the -H (help) option to view all the parameters for a given functionality.
 
-## Example of usage
+Here is the usage of each functionality:
 
-1. View the parameters of a functionality
+1. Encode:
 
-   Input: `cd-codes generateErrorDetectingRateGraph -H`
+```
+usage: cd-codes encode -C <arg> [-GP <arg>] [-H] -M <arg>
+ -C,--code <arg>                   The code to use to encode and decode
+                                   messages. Valid codes are:
+                                   - parityBit
+                                   - CRC
+                                   - internetChecksum
+                                   - hamming
+ -GP,--generatorPolynomial <arg>   The generator polynomial to use to
+                                   encode messages (only if CRC code is
+                                   chosen, default 1011)
+ -H,--help                         Display the usage for the given
+                                   functionality
+ -M,--message <arg>                The message to be encoded/decoded
+   ```
 
-   output:
+2. Decode:
+
+```
+usage: cd-codes decode -C <arg> [-GP <arg>] [-H] -M <arg>
+ -C,--code <arg>                   The code to use to encode and decode
+                                   messages. Valid codes are:
+                                   - parityBit
+                                   - CRC
+                                   - internetChecksum
+                                   - hamming
+ -GP,--generatorPolynomial <arg>   The generator polynomial to use to
+                                   encode messages (only if CRC code is
+                                   chosen, default 1011)
+ -H,--help                         Display the usage for the given
+                                   functionality
+ -M,--message <arg>                The message to be encoded/decoded
+   ```
+
+3. Generating a message:
+
+```
+usage: cd-codes generateMessage [-H] [-MBS <arg>]
+ -H,--help                     Display the usage for the given
+                               functionality
+ -MBS,--messageBitSize <arg>   Specify the length of a message to be coded
+                               (default 8 for parity bit code and CRC, 16
+                               for internet checksum and 4 for hamming)
+   ```
+
+4. Corrupting a message:
+
+```
+usage: cd-codes corruptMessage [-BL <arg>] [-E <arg>] [-H] -M <arg> [-P
+       <arg>]
+ -BL,--burstLength <arg>   Specify the length of the burst (only if
+                           burstError option was specified, default 3)
+ -E,--errorModel <arg>     Specify the error model of the transmission
+                           channel. Default model is constantError. Valid
+                           models are:
+                           - constantError
+                           - burstError
+ -H,--help                 Display the usage for the given functionality
+ -M,--message <arg>        The message to be encoded/decoded
+ -P <arg>                  The probability of a bit to be corrupted
+                           (default 0.1)
+   ```
+
+5. Generating the detection/error rate graph:
 
 ```
 usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
@@ -74,33 +135,35 @@ usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
  -S <arg>                          The number of step between the minimum
                                    and the maximum probability (default
                                    50)
-```
+   ```
 
-2. Encoding a message
+## Example of usage
+
+1. Encoding a message
 
    Input: `cd-codes encode -C hamming -M 1000`
 
    Output: `1001011`
 
-3. Decoding a message
+2. Decoding a message
 
    Input: `cd-codes decode -C hamming -M 1001001`
 
    Output: `1000`
 
-4. Generating a message
+3. Generating a message
 
    Input: `cd-codes generateMessage -MBS 10`
 
    Output: `1100111001`
 
-5. Corrupting a message
+4. Corrupting a message
 
    Input: `cd-codes corruptMessage -E burstError -M 00000000000000000000`
 
    Output: `00001010000000010100`
 
-6. Generating a graph showing the evolution of the detection/correction rate of a code according to the evolution of the
+5. Generating a graph showing the evolution of the detection/correction rate of a code according to the evolution of the
    error rate on a channel
 
    Input: `cd-codes generateErrorDetectingRateGraph -C hamming -MBS 11`
