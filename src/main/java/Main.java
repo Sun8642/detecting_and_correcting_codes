@@ -7,6 +7,7 @@ import command.GenerateMessageCommand;
 import enums.MainCommand;
 import model.CommandLineOption;
 import model.CommandLineParameter;
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -15,7 +16,7 @@ import org.apache.commons.cli.ParseException;
 
 public class Main {
 
-    private static final String APPLICATION_NAME = "myApp";
+    private static final String APPLICATION_NAME = "cd-codes";
 
     public static void main(String[] args) {
         MainCommand mainCommand = null;
@@ -54,7 +55,14 @@ public class Main {
                         throw new IllegalArgumentException("Missing implementation in main for command: " + mainCommand.getArgumentName());
             }
 
-            commandLineParameter.setParameters(parser.parse(options, args));
+            CommandLine commandLine = parser.parse(options, args);
+
+            if (commandLine.hasOption(CommandLineOption.HELP)) {
+                new HelpFormatter().printHelp(APPLICATION_NAME + " " + mainCommand.getArgumentName(), options, true);
+                return;
+            }
+
+            commandLineParameter.setParameters(commandLine);
             command.execute(commandLineParameter);
         } catch (ParseException | IllegalArgumentException exp) {
             // oops, something went wrong

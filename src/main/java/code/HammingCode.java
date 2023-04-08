@@ -122,13 +122,13 @@ public final class HammingCode implements Code {
     }
 
     public static int numberOfRedundancyBitsToAdd(int messageLength) {
-        int n = 0;
+        int r = 0;
         int power = 1;
-        while (power < (messageLength + n + 1)) {
-            n++;
+        while (power < (messageLength + r + 1)) {
+            r++;
             power *= 2;
         }
-        return n;
+        return r;
     }
 
     /**

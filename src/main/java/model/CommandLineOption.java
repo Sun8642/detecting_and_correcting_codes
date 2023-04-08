@@ -70,6 +70,11 @@ public final class CommandLineOption {
             .required(true)
             .hasArg()
             .build();
+    public static final Option HELP = Option.builder("H")
+            .longOpt("help")
+            .desc("Display the usage for the given functionality")
+            .required(false)
+            .build();
 
     public static final Options MAIN_OPTIONS = new Options();
 
@@ -83,6 +88,7 @@ public final class CommandLineOption {
         ENCODE_DECODE_OPTIONS.addOption(CODE);
         ENCODE_DECODE_OPTIONS.addOption(MESSAGE);
         ENCODE_DECODE_OPTIONS.addOption(GENERATOR_POLYNOMIAL);
+        ENCODE_DECODE_OPTIONS.addOption(HELP);
     }
 
     public static final Options GENERATE_GRAPH_OPTIONS = new Options();
@@ -97,12 +103,14 @@ public final class CommandLineOption {
         GENERATE_GRAPH_OPTIONS.addOption(ITERATIONS_PER_P);
         GENERATE_GRAPH_OPTIONS.addOption(NB_STEP_PER_P);
         GENERATE_GRAPH_OPTIONS.addOption(GENERATOR_POLYNOMIAL);
+        GENERATE_GRAPH_OPTIONS.addOption(HELP);
     }
 
     public static final Options GENERATE_MESSAGE_OPTIONS = new Options();
 
     static {
         GENERATE_MESSAGE_OPTIONS.addOption(MESSAGE_BIT_SIZE);
+        GENERATE_MESSAGE_OPTIONS.addOption(HELP);
     }
 
     public static final Options CORRUPT_MESSAGE_OPTIONS = new Options();
@@ -112,5 +120,6 @@ public final class CommandLineOption {
         CORRUPT_MESSAGE_OPTIONS.addOption(ERROR_CHANNEL_MODEL);
         CORRUPT_MESSAGE_OPTIONS.addOption(BURST_LENGTH);
         CORRUPT_MESSAGE_OPTIONS.addOption(MESSAGE);
+        CORRUPT_MESSAGE_OPTIONS.addOption(HELP);
     }
 }

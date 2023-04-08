@@ -31,17 +31,12 @@ public final class CyclicRedundancyCode implements Code {
         int remainderLeftMostSetBit = remainder.getLeftMostSetBit();
         int divisorLeftMostSetBit = divisor.getLeftMostSetBit();
 
-        int i, remainderBitToModify;
+        int i;
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
             i = 0;
             while (i < divisorLeftMostSetBit) {
                 if (divisor.testBit(divisorLeftMostSetBit - 1 - i)) {
-                    remainderBitToModify = remainderLeftMostSetBit - 1 - i;
-                    if (remainder.testBit(remainderBitToModify)) {
-                        remainder.clearBit(remainderBitToModify);
-                    } else {
-                        remainder.setBit(remainderBitToModify);
-                    }
+                    remainder.flipBit(remainderLeftMostSetBit - 1 - i);
                 }
                 i++;
             }
