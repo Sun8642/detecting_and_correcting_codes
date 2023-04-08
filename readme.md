@@ -5,16 +5,12 @@ provides several features.
 
 ## Implemented codes:
 
----
-
 - Parity bit
 - Cyclic redundancy check
 - Internet checksum
 - Hamming
 
 ## Functionalities:
-
----
 
 - **encode:** encode a message for a given code and message
 - **decode:** decode a message for a given code and message
@@ -24,8 +20,6 @@ provides several features.
   code according to the evolution of the error rate on a channel
 
 ## Usage
-
----
 
 This application is a command-line program, it uses the apache common-cli library.
 
@@ -38,13 +32,11 @@ You can always use the -H (help) option to view all the parameters for a given f
 
 ## Example of usage
 
----
-
 1. View the parameters of a functionality
 
    Input: `cd-codes generateErrorDetectingRateGraph -H`
-2.
-output:
+
+   output:
 
 ```
 usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
