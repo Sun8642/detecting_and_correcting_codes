@@ -1,4 +1,4 @@
-package channel.error;
+package service.channel.error;
 
 import math.BigInt;
 

@@ -1,4 +1,4 @@
-package enums;
+package command.enums;
 
 import lombok.Getter;
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigInteger;
+import service.code.InternetChecksum;
 
 public class InternetChecksumTest {
 

@@ -1,6 +1,6 @@
-package code;
+package service.code;
 
-import channel.error.ErrorChannelModel;
+import service.channel.error.ErrorChannelModel;
 import math.BigInt;
 
 public interface Code {

@@ -1,6 +1,6 @@
 package command;
 
-import model.CommandLineParameter;
+import command.line.CommandLineParameter;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 

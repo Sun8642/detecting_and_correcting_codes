@@ -1,4 +1,4 @@
-package channel.error;
+package service.channel.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

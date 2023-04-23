@@ -1,9 +1,9 @@
-package code;
+package service.code;
 
-import channel.error.ErrorChannelModel;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
+import service.channel.error.ErrorChannelModel;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 

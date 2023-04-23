@@ -1,23 +1,21 @@
-package enums;
+package command.enums;
 
 import lombok.Getter;
 
 @Getter
-public enum DetectingCode {
-    PARITY_BIT_CODE("parityBit"),
-    CYCLIC_REDUNDANCY_CODE("CRC"),
-    INTERNET_CHECKSUM("internetChecksum"),
-    HAMMING_CODE("hamming");
+public enum ErrorChannelModel {
+    CONSTANT_ERROR_CHANNEL_MODEL("constantError"),
+    BURST_ERROR_CHANNEL_MODEL("burstError");
 
     private final String argumentName;
 
-    DetectingCode(String argumentName) {
+    ErrorChannelModel(String argumentName) {
         this.argumentName = argumentName;
     }
 
     public static String getArgumentNamesForConsole() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (DetectingCode detectingCode : values()) {
+        for (ErrorChannelModel detectingCode : values()) {
             stringBuilder.append(" \n - ").append(detectingCode.argumentName);
         }
         return stringBuilder.toString();

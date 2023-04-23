@@ -1,6 +1,6 @@
 package command;
 
-import model.CommandLineParameter;
+import command.line.CommandLineParameter;
 import util.SyntheticDataGenerator;
 
 public class GenerateMessageCommand implements Command {

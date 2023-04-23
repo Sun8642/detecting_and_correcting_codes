@@ -1,15 +1,15 @@
-package model;
+package command.line;
 
-import channel.error.BurstErrorChannelModel;
-import channel.error.ConstantErrorChannelModel;
-import code.Code;
-import code.CyclicRedundancyCode;
-import code.HammingCode;
-import code.InternetChecksum;
-import code.ParityBitCode;
-import enums.DetectingCode;
-import enums.ErrorChannelModel;
-import enums.MainCommand;
+import service.channel.error.BurstErrorChannelModel;
+import service.channel.error.ConstantErrorChannelModel;
+import service.code.Code;
+import service.code.CyclicRedundancyCode;
+import service.code.HammingCode;
+import service.code.InternetChecksum;
+import service.code.ParityBitCode;
+import command.enums.DetectingCode;
+import command.enums.ErrorChannelModel;
+import command.enums.MainCommand;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
@@ -40,7 +40,7 @@ public class CommandLineParameter {
     protected DetectingCode detectingCode;
     protected Code code;
     protected ErrorChannelModel errorChannelModel = ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL;
-    protected channel.error.ErrorChannelModel errorChannelModelImpl = new ConstantErrorChannelModel();
+    protected service.channel.error.ErrorChannelModel errorChannelModelImpl = new ConstantErrorChannelModel();
 
     public void setParameters(CommandLine line) {
         if (line.hasOption(CommandLineOption.BURST_LENGTH)) {

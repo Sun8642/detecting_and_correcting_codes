@@ -1,6 +1,6 @@
 package command;
 
-import model.CommandLineParameter;
+import command.line.CommandLineParameter;
 
 public class DecodeCommand implements Command {
 
