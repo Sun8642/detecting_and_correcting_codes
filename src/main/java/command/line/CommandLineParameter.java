@@ -1,12 +1,5 @@
 package command.line;
 
-import service.channel.error.BurstErrorChannelModel;
-import service.channel.error.ConstantErrorChannelModel;
-import service.code.Code;
-import service.code.CyclicRedundancyCode;
-import service.code.HammingCode;
-import service.code.InternetChecksum;
-import service.code.ParityBitCode;
 import command.enums.DetectingCode;
 import command.enums.ErrorChannelModel;
 import command.enums.MainCommand;
@@ -14,6 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
 import org.apache.commons.cli.CommandLine;
+import service.channel.error.BurstErrorChannelModel;
+import service.channel.error.ConstantErrorChannelModel;
+import service.code.Code;
+import service.code.CyclicRedundancyCode;
+import service.code.HammingCode;
+import service.code.InternetChecksum;
+import service.code.ParityBitCode;
 
 import java.math.BigInteger;
 import java.text.Normalizer;
@@ -199,14 +199,16 @@ public class CommandLineParameter {
 
     public void setMinBoundYAxis(double minBoundYAxis) {
         if (minBoundYAxis < 0.0d || minBoundYAxis > 1.0d) {
-            throw new IllegalArgumentException("The minimum bound of the Y axis must be [0, 1].");
+            throw new IllegalArgumentException("The minimum bound of the Y axis must be [0, 1] (current value: " +
+                    minBoundYAxis + ").");
         }
         this.minBoundYAxis = minBoundYAxis;
     }
 
     public void setMaxBoundYAxis(double maxBoundYAxis) {
         if (maxBoundYAxis < 0.0d || maxBoundYAxis > 1.0d) {
-            throw new IllegalArgumentException("The minimum bound of the Y axis must be [0, 1].");
+            throw new IllegalArgumentException("The maximum bound of the Y axis must be [0, 1] (current value: " +
+                    maxBoundYAxis + ").");
         }
         if (maxBoundYAxis < minBoundYAxis) {
             throw new IllegalArgumentException("The value of the maximum bound of the Y axis value (" + maxBoundYAxis +
