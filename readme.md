@@ -101,8 +101,8 @@ usage: cd-codes corruptMessage [-BL <arg>] [-E <arg>] [-H] -M <arg> [-P
 
 ```
 usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
-       <arg>] [-GP <arg>] [-H] [-I <arg>] [-MaxP <arg>] [-MBS <arg>]
-       [-MinP <arg>] [-S <arg>]
+       <arg>] [-GP <arg>] [-H] [-I <arg>] [-MaxBY <arg>] [-MaxP <arg>]
+       [-MBS <arg>] [-MinBY <arg>] [-MinP <arg>] [-S <arg>]
  -BL,--burstLength <arg>           Specify the length of the burst (only
                                    if burstError option was specified,
                                    default 3)
@@ -124,12 +124,16 @@ usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
                                    functionality
  -I <arg>                          The number of iterations per
                                    probability (default 10000)
+ -MaxBY <arg>                      The maximum bound of the y axis
+                                   (default is 1.0d)
  -MaxP <arg>                       The maximum probability of a bit to be
                                    corrupted (default 0.5)
  -MBS,--messageBitSize <arg>       Specify the length of a message to be
                                    coded (default 8 for parity bit code
                                    and CRC, 16 for internet checksum and 4
                                    for hamming)
+ -MinBY <arg>                      The minimum bound of the y axis
+                                   (default is 0.0d)
  -MinP <arg>                       The minimum probability of a bit to be
                                    corrupted (default 0.01)
  -S <arg>                          The number of step between the minimum

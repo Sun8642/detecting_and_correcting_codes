@@ -42,6 +42,10 @@ public class GenerateGraphCommand implements Command {
             plot.addLegend(PlotPanel.EAST);
         }
 
+        if (commandLineParameter.isBindYAxis()) {
+            plot.setFixedBounds(1, commandLineParameter.getMinBoundYAxis(), commandLineParameter.getMaxBoundYAxis());
+        }
+
         JFrame frame = new JFrame("Error detection" + (commandLineParameter.getCode().canCorrectError() ? "/correction" : "") + " rate with code: " + commandLineParameter.getDetectingCode().getArgumentName());
         frame.setContentPane(plot);
         frame.setVisible(true);

@@ -24,23 +24,26 @@ public class CommandLineParameter {
 
     public static final String ERROR_POLYNOMIAL_GENERATOR_MIN_VALUE = "The polynomial generator must be greater or equals to 10 (in binary representation).";
 
-    protected int numberOfIterationsPerProbability = 10000;
+    private int numberOfIterationsPerProbability = 10000;
 
-    protected int messageBitSize = 8;
+    private int messageBitSize = 8;
 
-    protected double minP = 0.01d;
-    protected double maxP = 0.5d;
-    protected double p = 0.1d;
-    protected int numberOfStep = 50;
+    private double minP = 0.01d;
+    private double maxP = 0.5d;
+    private double p = 0.1d;
+    private int numberOfStep = 50;
+    private double minBoundYAxis = 0.0d;
+    private double maxBoundYAxis = 1.0d;
+    private boolean bindYAxis = false;
 
-    protected int burstErrorLength = 3;
+    private int burstErrorLength = 3;
     private BigInt generatorPolynomial = new BigInt(Long.parseLong("1011", 2));
     private BigInt message;
 
-    protected DetectingCode detectingCode;
-    protected Code code;
-    protected ErrorChannelModel errorChannelModel = ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL;
-    protected channel.error.ErrorChannelModel errorChannelModelImpl = new ConstantErrorChannelModel();
+    private DetectingCode detectingCode;
+    private Code code;
+    private ErrorChannelModel errorChannelModel = ErrorChannelModel.CONSTANT_ERROR_CHANNEL_MODEL;
+    private channel.error.ErrorChannelModel errorChannelModelImpl = new ConstantErrorChannelModel();
 
     public void setParameters(CommandLine line) {
         if (line.hasOption(CommandLineOption.BURST_LENGTH)) {
@@ -69,6 +72,16 @@ public class CommandLineParameter {
 
         if (line.hasOption(CommandLineOption.NB_STEP_PER_P)) {
             setNumberOfStep(Integer.parseInt(line.getOptionValue(CommandLineOption.NB_STEP_PER_P)));
+        }
+
+        if (line.hasOption(CommandLineOption.MIN_BOUND_Y_AXIS)) {
+            bindYAxis = true;
+            setMinBoundYAxis(Double.parseDouble(line.getOptionValue(CommandLineOption.MIN_BOUND_Y_AXIS)));
+        }
+
+        if (line.hasOption(CommandLineOption.MAX_BOUND_Y_AXIS)) {
+            bindYAxis = true;
+            setMaxBoundYAxis(Double.parseDouble(line.getOptionValue(CommandLineOption.MAX_BOUND_Y_AXIS)));
         }
 
         if (line.hasOption(CommandLineOption.GENERATOR_POLYNOMIAL)) {
@@ -182,6 +195,25 @@ public class CommandLineParameter {
             throw new IllegalArgumentException("The number of bits per message must be at least one.");
         }
         this.numberOfStep = numberOfStep;
+    }
+
+    public void setMinBoundYAxis(double minBoundYAxis) {
+        if (minBoundYAxis < 0.0d || minBoundYAxis > 1.0d) {
+            throw new IllegalArgumentException("The minimum bound of the Y axis must be [0, 1].");
+        }
+        this.minBoundYAxis = minBoundYAxis;
+    }
+
+    public void setMaxBoundYAxis(double maxBoundYAxis) {
+        if (maxBoundYAxis < 0.0d || maxBoundYAxis > 1.0d) {
+            throw new IllegalArgumentException("The minimum bound of the Y axis must be [0, 1].");
+        }
+        if (maxBoundYAxis < minBoundYAxis) {
+            throw new IllegalArgumentException("The value of the maximum bound of the Y axis value (" + maxBoundYAxis +
+                    ") should we higher or equal to the value of the minimum bound of the Y axis (actual value: " +
+                    minBoundYAxis + ")");
+        }
+        this.maxBoundYAxis = maxBoundYAxis;
     }
 
     public void setBurstErrorLength(int burstErrorLength) {

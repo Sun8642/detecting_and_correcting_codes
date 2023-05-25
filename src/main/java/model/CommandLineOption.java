@@ -59,6 +59,14 @@ public final class CommandLineOption {
             .desc("The number of step between the minimum and the maximum probability (default 50)")
             .hasArg()
             .build();
+    public static final Option MIN_BOUND_Y_AXIS = Option.builder("MinBY")
+            .desc("The minimum bound of the y axis (default is 0.0d)")
+            .hasArg()
+            .build();
+    public static final Option MAX_BOUND_Y_AXIS = Option.builder("MaxBY")
+            .desc("The maximum bound of the y axis (default is 1.0d)")
+            .hasArg()
+            .build();
     public static final Option GENERATOR_POLYNOMIAL = Option.builder("GP")
             .longOpt("generatorPolynomial")
             .desc("The generator polynomial to use to encode messages (only if CRC code is chosen, default 1011)")
@@ -102,6 +110,8 @@ public final class CommandLineOption {
         GENERATE_GRAPH_OPTIONS.addOption(MAX_P);
         GENERATE_GRAPH_OPTIONS.addOption(ITERATIONS_PER_P);
         GENERATE_GRAPH_OPTIONS.addOption(NB_STEP_PER_P);
+        GENERATE_GRAPH_OPTIONS.addOption(MIN_BOUND_Y_AXIS);
+        GENERATE_GRAPH_OPTIONS.addOption(MAX_BOUND_Y_AXIS);
         GENERATE_GRAPH_OPTIONS.addOption(GENERATOR_POLYNOMIAL);
         GENERATE_GRAPH_OPTIONS.addOption(HELP);
     }
