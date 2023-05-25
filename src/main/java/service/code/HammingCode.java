@@ -1,9 +1,9 @@
-package code;
+package service.code;
 
-import channel.error.ErrorChannelModel;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
+import service.channel.error.ErrorChannelModel;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 
@@ -113,11 +113,9 @@ public final class HammingCode implements Code {
     private static boolean isRedundancyBitIncorrect(int bitPosition, int numberOfOneForBitPosition, BigInt encodedMessage, boolean parity) {
         boolean isBitSetAtPosition = encodedMessage.testBit(bitPosition - 1);
         if (parity) {
-            return (numberOfOneForBitPosition % 2 == 1 && !isBitSetAtPosition) ||
-                    (numberOfOneForBitPosition % 2 == 0 && isBitSetAtPosition);
+            return isBitSetAtPosition != (numberOfOneForBitPosition % 2 == 1);
         } else {
-            return (numberOfOneForBitPosition % 2 == 1 && isBitSetAtPosition) ||
-                    (numberOfOneForBitPosition % 2 == 0 && !isBitSetAtPosition);
+            return isBitSetAtPosition != (numberOfOneForBitPosition % 2 == 0);
         }
     }
 

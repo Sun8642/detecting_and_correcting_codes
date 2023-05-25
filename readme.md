@@ -12,11 +12,11 @@ provides several features.
 
 ## Functionalities:
 
-- **encode:** encode a message for a given code and message
-- **decode:** decode a message for a given code and message
-- **generateMessage:** generate a random message
-- **corruptMessage:** corrupt a given message
-- **generateErrorDetectingRateGraph:** Generates a graph showing the evolution of the detection/correction rate of a
+- **encode:** encodes a message for a given code and message
+- **decode:** decodes a message for a given code and message
+- **generateMessage:** generates a random message
+- **corruptMessage:** corrupts a given message
+- **generateErrorDetectingRateGraph:** generates a graph showing the evolution of the detection/correction rate of a
   code according to the evolution of the error rate on a channel
 
 ## Usage

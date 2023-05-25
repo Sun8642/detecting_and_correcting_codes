@@ -1,8 +1,8 @@
-package model;
+package command.line;
 
-import enums.DetectingCode;
-import enums.ErrorChannelModel;
-import enums.MainCommand;
+import command.enums.DetectingCode;
+import command.enums.ErrorChannelModel;
+import command.enums.MainCommand;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.cli.Option;
