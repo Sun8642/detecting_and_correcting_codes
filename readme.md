@@ -168,9 +168,26 @@ usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
    Output: `00001010000000010100`
 
 5. Generating a graph showing the evolution of the detection/correction rate of a code according to the evolution of the
-   error rate on a channel
+   error rate on a channel, it also displays 3 arrays:
+   - First array contains the list of probabilities for which the detection/correction rates have
+     been generated. Each entry in this table corresponds to a specific probability value within the given range.
+     This allows users to identify the specific probabilities at which the rates are calculated.
+   - Second array lists the error detection rates corresponding to each probability value. The detection rate indicates
+     the percentage of errors that could be successfully identified by the implemented code. Users can analyze how the
+     detection rate varies with different probabilities.
+   - The third array is only displayed if the specified code can correct error, it contains the error correction rates
+     for each probability value. This table provides the percentage of errors that could be successfully corrected by
+     the code.
+     It gives insights into how the correction rate changes with different probabilities.
 
    Input: `cd-codes generateErrorDetectingRateGraph -C hamming -MBS 11`
 
    Output:
+
+   `[0.01, 0.02, 0.03, ...]`
+
+   `[1.0, 0.9992398327632079, 0.9989273263609547, 0.9955604883462819, ...]`
+
+   `[0.9289855072463769, 0.8703914861269479, 0.8082595870206489, ...]`
+
    ![Alt text](/GenerateHammingGraph.png?raw=true "Evolution of detecting and correcting rate for a given error rate using Hamming code")

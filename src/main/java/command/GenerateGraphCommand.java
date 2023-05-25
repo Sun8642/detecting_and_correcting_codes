@@ -5,6 +5,7 @@ import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 public class GenerateGraphCommand implements Command {
 
@@ -31,6 +32,8 @@ public class GenerateGraphCommand implements Command {
             }
             currentP += pToAdd;
         }
+        System.out.println(Arrays.toString(probabilities));
+        System.out.println(Arrays.toString(errorDetectingRates));
 
         Plot2DPanel plot = new Plot2DPanel();
 
@@ -40,6 +43,7 @@ public class GenerateGraphCommand implements Command {
         if (commandLineParameter.getCode().canCorrectError()) {
             plot.addLinePlot("Error correction rate", probabilities, errorCorrectingRates);
             plot.addLegend(PlotPanel.EAST);
+            System.out.println(Arrays.toString(errorCorrectingRates));
         }
 
         if (commandLineParameter.isBindYAxis()) {
