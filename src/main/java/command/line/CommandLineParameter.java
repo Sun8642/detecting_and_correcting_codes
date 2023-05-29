@@ -191,8 +191,8 @@ public class CommandLineParameter {
     }
 
     public void setNumberOfStep(int numberOfStep) {
-        if (messageBitSize < 1) {
-            throw new IllegalArgumentException("The number of bits per message must be at least one.");
+        if (messageBitSize < 2) {
+            throw new IllegalArgumentException("The number of bits per message must be at least two.");
         }
         this.numberOfStep = numberOfStep;
     }
