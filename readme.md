@@ -129,9 +129,7 @@ usage: cd-codes generateErrorDetectingRateGraph [-BL <arg>] -C <arg> [-E
  -MaxP <arg>                       The maximum probability of a bit to be
                                    corrupted (default 0.5)
  -MBS,--messageBitSize <arg>       Specify the length of a message to be
-                                   coded (default 8 for parity bit code
-                                   and CRC, 16 for internet checksum and 4
-                                   for hamming)
+                                   coded (default 8)
  -MinBY <arg>                      The minimum bound of the y axis
                                    (default is 0.0d)
  -MinP <arg>                       The minimum probability of a bit to be

@@ -36,7 +36,7 @@ public final class CommandLineOption {
             .build();
     public static final Option MESSAGE_BIT_SIZE = Option.builder("MBS")
             .longOpt("messageBitSize")
-            .desc("Specify the length of a message to be coded (default 8 for parity bit code and CRC, 16 for internet checksum and 4 for hamming)")
+            .desc("Specify the length of a message to be coded (default 8)")
             .hasArg()
             .build();
     public static final Option MIN_P = Option.builder("MinP")
