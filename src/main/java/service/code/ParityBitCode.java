@@ -1,11 +1,10 @@
 package service.code;
 
-import service.channel.error.ErrorChannelModel;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
-import util.ProbabilityError;
-import util.SyntheticDataGenerator;
+import service.SyntheticDataGenerator;
+import service.channel.error.ErrorChannelModel;
 
 @Getter
 @Setter
@@ -13,14 +12,6 @@ public class ParityBitCode implements Code {
 
     private int k;
     private int n;
-
-    public static double getProbabilityOfDetectingError(int N, double p) {
-        double probabilityOfDetectingError = 0.d;
-        for (int k = 2; k <= N; k += 2) {
-            probabilityOfDetectingError += ProbabilityError.getProbabilityOfKErrors(N, p, k);
-        }
-        return 1 - probabilityOfDetectingError;
-    }
 
     public void encode(BigInt message, int k) {
         this.k = k;

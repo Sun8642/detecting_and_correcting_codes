@@ -1,7 +1,7 @@
 package command;
 
 import command.line.CommandLineParameter;
-import util.SyntheticDataGenerator;
+import service.SyntheticDataGenerator;
 
 public class GenerateMessageCommand implements Command {
 

@@ -10,15 +10,6 @@ public class ParityBitCodeTest {
 
     @ParameterizedTest
     @CsvSource({
-            "0.989559,16,0.01",
-            "0.671228,16,0.1"
-    })
-    public void getProbabilityOfDetectingError(double expected, int N, double p) {
-        Assertions.assertEquals(expected, ParityBitCode.getProbabilityOfDetectingError(N, p), 0.001d);
-    }
-
-    @ParameterizedTest
-    @CsvSource({
             "00000,0000",
             "11110,1111",
             "101101,10110",

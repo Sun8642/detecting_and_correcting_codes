@@ -1,10 +1,10 @@
 package service.code;
 
-import service.channel.error.ErrorChannelModel;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
-import util.SyntheticDataGenerator;
+import service.SyntheticDataGenerator;
+import service.channel.error.ErrorChannelModel;
 
 @Getter
 @Setter

@@ -3,9 +3,9 @@ package service.code;
 import lombok.Getter;
 import lombok.Setter;
 import math.BigInt;
+import service.SyntheticDataGenerator;
 import service.channel.error.ErrorChannelModel;
 import util.BitUtil;
-import util.SyntheticDataGenerator;
 
 @Getter
 @Setter
